@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>🧠记忆挑战 | 精英匹配游戏</title>
+    <title>🧠 باكالوريا数学挑战 | 高阶数学竞赛</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
 
         body {
-            background: linear-gradient(145deg, #0b2b3b 0%, #1a4a5f 100%);
+            background: linear-gradient(145deg, #101f2c 0%, #1b3a4b 100%);
             font-family: 'Segoe UI', 'Tajawal', 'Poppins', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
@@ -24,12 +24,12 @@
 
         /* الحاوية الرئيسية */
         .game-container {
-            max-width: 800px;
+            max-width: 850px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(2px);
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
             border-radius: 2.5rem;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15);
             padding: 1.2rem;
             transition: all 0.3s ease;
         }
@@ -41,34 +41,32 @@
             gap: 0.8rem;
             flex-wrap: wrap;
             margin-bottom: 1.8rem;
-            border-bottom: 2px solid rgba(255, 215, 150, 0.4);
+            border-bottom: 2px solid rgba(100, 200, 200, 0.4);
             padding-bottom: 0.8rem;
         }
 
         .nav-btn {
-            background: rgba(10, 30, 40, 0.7);
+            background: rgba(20, 40, 55, 0.8);
             border: none;
             padding: 0.6rem 1.4rem;
             font-size: 1.1rem;
             font-weight: bold;
             font-family: inherit;
             border-radius: 60px;
-            color: #f0e6d0;
+            color: #eef4ff;
             cursor: pointer;
             transition: 0.2s;
             backdrop-filter: blur(4px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-
-        .nav-btn i { margin-left: 6px; font-style: normal; display: inline-block; }
         .nav-btn.active {
-            background: #ffb347;
-            color: #1e2f3a;
-            box-shadow: 0 0 12px #ffb347aa;
+            background: #2aa9c9;
+            color: #0a1a24;
+            box-shadow: 0 0 12px #5bc8ff;
             transform: scale(1.02);
         }
         .nav-btn:hover:not(.active) {
-            background: #2c6e7e;
+            background: #2f7e97;
             color: white;
             transform: translateY(-2px);
         }
@@ -87,117 +85,114 @@
             to { opacity: 1; transform: translateY(0);}
         }
 
-        /* بطاقات اللعبة */
-        .game-board {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin: 20px 0;
-            justify-items: center;
-            align-items: center;
-        }
-
-        .card {
-            background: linear-gradient(135deg, #f9e0a0, #f7bc45);
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 12px 18px -8px rgba(0, 0, 0, 0.4);
-            border: 2px solid #ffefc0;
-            transform: scale(1);
-            text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
-        }
-        .card:active { transform: scale(0.96);}
-        .card.matched {
-            background: linear-gradient(145deg, #4caf7a, #2e7d64);
-            cursor: default;
-            color: white;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.2);
-            transform: scale(0.98);
-            filter: drop-shadow(0 0 4px #b9ffcf);
-        }
-        .card.flipped {
-            background: #fff2df;
-            color: #c45500;
-            border: 2px solid #ffb347;
-        }
-
-        /* لوحة الاحصائيات */
-        .stats-panel {
-            background: #1f3e48cc;
-            backdrop-filter: blur(8px);
-            border-radius: 40px;
-            padding: 12px 20px;
+        /* لوحة السؤال */
+        .quiz-header {
+            background: #0a232ee0;
+            border-radius: 2rem;
+            padding: 18px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             flex-wrap: wrap;
             gap: 12px;
-            margin: 15px 0;
-            color: #fef3cf;
+            color: #ffefcf;
             font-weight: bold;
+            backdrop-filter: blur(4px);
         }
-        .stat {
-            background: #00000055;
+        .stat-box {
+            background: #00000066;
             padding: 5px 16px;
-            border-radius: 32px;
+            border-radius: 40px;
             font-size: 1.1rem;
         }
-        .stat span {
-            color: #ffdd99;
-            font-size: 1.3rem;
-            margin-left: 6px;
+        .question-text {
+            background: #fffcf0;
+            padding: 25px 20px;
+            border-radius: 2rem;
+            font-size: 1.4rem;
+            text-align: center;
+            color: #003c4a;
+            font-weight: bold;
+            box-shadow: inset 0 0 0 2px #ffe1a0, 0 10px 20px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            line-height: 1.4;
         }
-        button {
-            background: #ffaa33;
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .option-btn {
+            background: #1e4a5f;
             border: none;
-            padding: 8px 22px;
+            border-radius: 60px;
+            padding: 14px 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #f9f3e2;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 5px 0 #0b2a36;
+            font-family: inherit;
+        }
+        .option-btn:hover:not(:disabled) {
+            background: #2f7a92;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #0b2a36;
+        }
+        .option-btn.correct-highlight {
+            background: #2c9c6e;
+            box-shadow: 0 0 8px #a3ffc4;
+            border: 1px solid #bbffdd;
+        }
+        .option-btn.wrong-highlight {
+            background: #bc4e2c;
+            text-decoration: line-through;
+        }
+        .option-btn:disabled {
+            opacity: 0.8;
+            cursor: default;
+            transform: none;
+        }
+        .next-btn {
+            background: #ffb347;
+            font-size: 1.2rem;
+            padding: 12px 28px;
+            width: 100%;
             border-radius: 60px;
             font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
+            color: #1e2f3a;
             transition: 0.2s;
-            font-family: inherit;
-            color: #1e3b42;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        button:active { transform: scale(0.96);}
-        button.reset-btn {
-            background: #f05a28;
+        .next-btn:active { transform: scale(0.97);}
+        .reset-game-btn {
+            background: #a5422c;
             color: white;
+            margin-top: 15px;
         }
-        .status-msg {
+        .finish-panel {
             text-align: center;
-            font-size: 1rem;
-            background: #00000066;
-            padding: 8px;
-            border-radius: 60px;
-            margin-top: 8px;
+            background: #09313ee0;
+            border-radius: 2rem;
+            padding: 25px;
+            margin-top: 20px;
         }
-
-        /* صفحة القائمة الرئيسية */
+        /* صفحة القائمة */
         .menu-card {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.55);
             backdrop-filter: blur(12px);
             border-radius: 48px;
             padding: 30px 20px;
             text-align: center;
-            margin: 15px 0;
         }
         .menu-card h1 {
-            font-size: 2.2rem;
-            color: #ffeaac;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            color: #ffecb3;
         }
         .name-input {
-            background: #fff0d0;
+            background: #fff8e7;
             border: none;
             padding: 12px 20px;
             border-radius: 60px;
@@ -207,19 +202,16 @@
             text-align: center;
             font-weight: bold;
         }
-        .big-play {
-            background: #f5b042;
-            font-size: 1.6rem;
+        .start-btn {
+            background: #2aa9c9;
+            font-size: 1.5rem;
             padding: 12px 35px;
-            margin-top: 10px;
-            box-shadow: 0 8px 0 #8b4c1a;
+            box-shadow: 0 8px 0 #116277;
             transform: translateY(-2px);
         }
-        .big-play:active { transform: translateY(4px); box-shadow: 0 4px 0 #8b4c1a;}
-
         /* صفحة النتائج */
         .score-list {
-            background: #0e2f3ae0;
+            background: #06222ce0;
             border-radius: 2rem;
             padding: 20px;
             margin-top: 20px;
@@ -227,522 +219,447 @@
         .score-item {
             display: flex;
             justify-content: space-between;
-            background: #faf3dd30;
-            margin: 10px 0;
+            background: #f9f0da20;
+            margin: 12px 0;
             padding: 12px 20px;
             border-radius: 60px;
             font-weight: bold;
-            color: #ffe2b5;
-            font-size: 1rem;
+            color: #ffefcf;
         }
-        .score-rank {
-            background: #ffb347;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #1e2f3a;
-        }
-        .empty-scores {
-            text-align: center;
-            padding: 25px;
-            color: #ddd;
+        .clear-scores {
+            background: #8b3c2a;
+            margin-top: 15px;
         }
         /* صفحة التعليمات */
         .instructions {
-            background: #102b33cc;
+            background: #062a33cc;
             border-radius: 2rem;
             padding: 25px;
             line-height: 1.8;
-            color: #f7e9c3;
+            color: #f3e9c0;
         }
         .instructions h3 {
-            color: #ffce89;
-            margin-bottom: 12px;
+            color: #ffcf7a;
         }
-        hr {
-            margin: 15px 0;
-            border-color: #ffb34755;
-        }
+        hr { margin: 15px 0; border-color: #4e9aaa; }
         footer {
             text-align: center;
             margin-top: 20px;
             font-size: 0.7rem;
-            color: #b9d8e3;
+            color: #bbdce8;
         }
-
-        @media (max-width: 550px) {
-            .game-board { gap: 8px; }
-            .card { font-size: 1.8rem; }
-            .stat { font-size: 0.85rem; padding: 3px 12px; }
-            .nav-btn { padding: 0.4rem 1rem; font-size: 0.9rem; }
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .question-text { font-size: 1.1rem; }
+            .stat-box { font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
 <div class="game-container">
-    <!-- أزرار التنقل (الصفحات الفرعية) -->
     <div class="nav-bar">
         <button class="nav-btn" data-page="menu">🏠 القائمة</button>
-        <button class="nav-btn" data-page="game">🎮 اللعبة</button>
+        <button class="nav-btn" data-page="game">🧮 التحدي</button>
         <button class="nav-btn" data-page="scores">🏆 الأبطال</button>
-        <button class="nav-btn" data-page="help">📘 تعليمات</button>
+        <button class="nav-btn" data-page="help">📘 التعليمات</button>
     </div>
 
     <!-- الصفحة 1: القائمة الرئيسية -->
     <div id="menu-page" class="page">
         <div class="menu-card">
-            <h1>🧩 ذاكرة الأبطال</h1>
-            <p style="color:#ffdd99;">اختبر ذاكرتك وطابق الأزواج بأسرع وقت</p>
+            <h1>⚡ بكالوريا数学挑战 ⚡</h1>
+            <p style="color:#c3e2f0; margin:10px 0">أسئلة تفاضل، تكامل، أعداد مركبة، نهايات، احتمالات ... للمستوى العالي</p>
             <div style="margin: 25px 0;">
-                <input type="text" id="playerNameInput" class="name-input" placeholder="اسم اللاعب البطل" maxlength="20" value="مغامر">
+                <input type="text" id="playerName" class="name-input" placeholder="اسم البطل" maxlength="20" value="عبقري الرياضيات">
                 <br>
-                <button id="startFromMenuBtn" class="big-play">🚀 ابدأ اللعبة</button>
+                <button id="startGameBtn" class="start-btn">🎯 ابدأ الاختبار</button>
             </div>
-            <div style="background:#00000044; border-radius: 40px; padding: 12px;">
-                <p>⭐ قواعد سريعة: اقلب بطاقتين، تطابق تحصل على نقطة. أقل حركات & أسرع وقت يصنع الأساطير!</p>
+            <div style="background:#00000055; border-radius: 40px; padding: 12px;">
+                <p>⭐ 10 أسئلة عشوائية من بنك متقدم | كل سؤال 4 خيارات | سجل أفضل النتائج حسب الإجابات الصحيحة والزمن</p>
             </div>
         </div>
     </div>
 
-    <!-- الصفحة 2: اللعبة الأساسية -->
+    <!-- الصفحة 2: لعبة الأسئلة -->
     <div id="game-page" class="page">
-        <div class="stats-panel">
-            <div class="stat">🎯 التطابقات: <span id="matchesCount">0</span> / <span id="totalPairs">8</span></div>
-            <div class="stat">🖱️ الحركات: <span id="moveCount">0</span></div>
-            <div class="stat">⏱️ الزمن: <span id="timerDisplay">0</span> ث</div>
-            <button id="newGameBtn" class="reset-btn">🔄 لعبة جديدة</button>
+        <div class="quiz-header">
+            <div class="stat-box">📋 السؤال <span id="qCurrent">1</span> / <span id="qTotal">10</span></div>
+            <div class="stat-box">✅ النتيجة: <span id="scoreCount">0</span> / <span id="totalQ">10</span></div>
+            <div class="stat-box">⏱️ الزمن: <span id="timerDisplay">0</span> ث</div>
         </div>
-        <div id="board" class="game-board"></div>
-        <div id="gameStatus" class="status-msg">✨ اختر بطاقتين لتطابق الزوج ✨</div>
-        <div style="margin-top: 10px; text-align: center; font-size:0.8rem;">⭐ اسم اللاعب: <span id="currentGamePlayer">مغامر</span></div>
+        <div id="questionText" class="question-text">...</div>
+        <div id="optionsContainer" class="options-grid"></div>
+        <button id="nextQuestionBtn" class="next-btn" style="display: none;">➡️ السؤال التالي</button>
+        <button id="restartGameBtn" class="reset-game-btn" style="background:#5f4339;">🔄 إعادة الاختبار</button>
+        <div id="gameMessage" style="text-align: center; margin-top: 15px; color:#ffdd99;"></div>
     </div>
 
-    <!-- الصفحة 3: قائمة الأبطال (النتائج) -->
+    <!-- الصفحة 3: قائمة الأبطال -->
     <div id="scores-page" class="page">
         <div style="text-align: center;">
-            <h2 style="color:#ffdd99;">🏅 قائمة أعلى النقاط</h2>
-            <button id="clearScoresBtn" style="background:#aa3e1c; margin: 12px;">🗑️ مسح السجل</button>
+            <h2 style="color:#ffdd99;">🏅 ترتيب العباقرة 🏅</h2>
+            <button id="clearLeaderboard" style="background:#aa4a2c; margin: 12px;">🗑️ مسح التصنيف</button>
         </div>
-        <div id="highScoresList" class="score-list">
-            <div class="empty-scores">📭 لا توجد نتائج بعد، العب وسجل اسمك!</div>
+        <div id="leaderboardList" class="score-list">
+            <div class="empty-scores" style="text-align:center; padding:20px;">📭 لا توجد نتائج بعد، كن الأول!</div>
         </div>
     </div>
 
     <!-- الصفحة 4: التعليمات -->
     <div id="help-page" class="page">
         <div class="instructions">
-            <h3>🎯 كيف تلعب "ذاكرة الأبطال" ؟</h3>
-            <p>1️⃣ اضغط على أي بطاقة لقلبها ورؤية الرمز (فواكه / أشكال).<br>
-            2️⃣ اقلب بطاقتين في كل محاولة، إذا تطابق الرمزان تثبت البطاقتان ويتم تسجيل تطابق.<br>
-            3️⃣ إذا لم يتطابقا، تنقلبا مرة أخرى بعد لحظة.<br>
-            4️⃣ الهدف: إنهاء جميع التطابقات (8 أزواج) بأقل عدد حركات وأسرع زمن.<br>
-            5️⃣ في نهاية اللعبة يتم حفظ نتيجتك إذا كانت من بين أفضل 5 نتائج بناءً على (الحركات ثم الزمن).<br>
-            🧠 <strong>نصيحة:</strong> ركز على المواقع وحاول تذكر الرموز. استمتع!</p>
+            <h3>📐 كيف تلعب "بكالوريا数学挑战" ؟</h3>
+            <p>• اختبار يحتوي على 10 أسئلة عشوائية من مواضيع البكالوريا العليا (التحليل، الأعداد المركبة، الاحتمالات، المتتاليات، التكامل...).<br>
+            • كل سؤال له 4 إجابات، اختر الإجابة الصحيحة.<br>
+            • بعد اختيارك، سيظهر لك التصحيح (تتحول الخيارات إلى أخضر للصواب وأحمر للخطأ).<br>
+            • اضغط "السؤال التالي" للمتابعة. لا يمكن تغيير الإجابة بعد الاختيار.<br>
+            • يتم احتساب النقاط (كل إجابة صحيحة = 1) بالإضافة إلى الزمن الكلي لإنهاء الاختبار.<br>
+            • يتم حفظ أفضل 5 نتائج بناءً على (عدد الإجابات الصحيحة أولاً، ثم الزمن الأقل).<br>
+            🧠 <strong>نصائح:</strong> ركّز على المفاهيم العميقة، السرعة والدقة معًا تصنع الأسطورة.</p>
             <hr>
-            <p>✨ يمكنك الانتقال بين الصفحات (القائمة، اللعبة، الأبطال، التعليمات) عبر الأزرار العلوية.<br>
-            🔁 استخدم زر "لعبة جديدة" في صفحة اللعبة لبدء جولة جديدة.<br>
-            🏆 سجل اسمك في القائمة قبل اللعب لتخليد إنجازك.</p>
+            <p>✨ تستطيع الانتقال بين القائمة، التحدي، الأبطال والتعليمات عبر الأزرار العلوية.<br>
+            🕒 المؤقت يبدأ فور ظهور السؤال الأول ولا يتوقف حتى نهاية الاختبار.</p>
         </div>
     </div>
-    <footer>🎴 لعبة مطابقة الذاكرة | إصدار ذهبي</footer>
+    <footer>🏆 أسئلة بمستوى البكالوريا – تحدي العقل الرياضي</footer>
 </div>
 
 <script>
-    // ------------------- المتغيرات العامة -------------------
-    // عناصر DOM
-    const pages = document.querySelectorAll('.page');
-    const navBtns = document.querySelectorAll('.nav-btn');
-    const boardDiv = document.getElementById('board');
-    const matchesSpan = document.getElementById('matchesCount');
-    const moveSpan = document.getElementById('moveCount');
-    const timerSpan = document.getElementById('timerDisplay');
-    const gameStatusDiv = document.getElementById('gameStatus');
-    const currentGamePlayerSpan = document.getElementById('currentGamePlayer');
-    const playerNameInput = document.getElementById('playerNameInput');
-    const startFromMenuBtn = document.getElementById('startFromMenuBtn');
-    const newGameBtn = document.getElementById('newGameBtn');
-    const clearScoresBtn = document.getElementById('clearScoresBtn');
-    const totalPairsSpan = document.getElementById('totalPairs');
+    // ======================= بنك الأسئلة (مستوى عالي) =======================
+    const QUESTION_BANK = [
+        { text: "ما قيمة النهاية lim (sin x)/x عندما x → 0 ?", options: ["0", "1", "∞", "غير موجودة"], correct: 1 },
+        { text: "مشتقة الدالة ln(x) هي:", options: ["1/x", "x", "e^x", "ln(x)"], correct: 0 },
+        { text: "∫ (1/x) dx = ?", options: ["ln|x| + C", "x ln x + C", "e^x + C", "1/x² + C"], correct: 0 },
+        { text: "مقياس العدد المركب 3+4i يساوي:", options: ["5", "7", "1", "√7"], correct: 0 },
+        { text: "احتمال الحصول على وجه واحد على الأقل عند رمي قطعة نقود مرتين:", options: ["1/4", "1/2", "3/4", "1"], correct: 2 },
+        { text: "مشتقة e^(2x) هي:", options: ["2e^(2x)", "e^(2x)", "2e^(x)", "e^(2x) * ln2"], correct: 0 },
+        { text: "إذا كان f(x)=x³ ، فإن f'(2) = ?", options: ["6", "12", "8", "4"], correct: 1 },
+        { text: "i² (وحدة تخيلية) تساوي:", options: ["1", "-1", "i", "-i"], correct: 1 },
+        { text: "مجموع جذري المعادلة x² - 5x + 6 = 0 هو:", options: ["5", "-5", "6", "-6"], correct: 0 },
+        { text: "النهاية lim (1 + 1/n)^n عندما n → ∞ هي:", options: ["1", "e", "∞", "0"], correct: 1 },
+        { text: "∫ cos x dx = ?", options: ["sin x + C", "-sin x + C", "cos x + C", "-cos x + C"], correct: 0 },
+        { text: "مشتقة tan x هي:", options: ["sec² x", "csc² x", "sec x tan x", "1/(1+x²)"], correct: 0 },
+        { text: "العمدة (Argument) للعدد المركب -1 يساوي:", options: ["0", "π", "π/2", "-π/2"], correct: 1 },
+        { text: "∫₀¹ x dx = ?", options: ["0.5", "1", "0", "2"], correct: 0 },
+        { text: "مشتقة arctan x هي:", options: ["1/(1+x²)", "1/(1-x²)", "x/(1+x²)", "arctan x"], correct: 0 },
+        { text: "إذا كان A و B حدثين مستقلين، P(A)=0.4 , P(B)=0.5 فإن P(A∩B) = ?", options: ["0.2", "0.9", "0.1", "0.5"], correct: 0 },
+        { text: "قيمة log₂ 8 هي:", options: ["2", "3", "4", "8"], correct: 1 },
+        { text: "مجموعة حل المتباينة |x-2| < 3 هي:", options: ["(-1,5)", "(-∞,5)", "(2,5)", "(-1,∞)"], correct: 0 },
+        { text: "المرافق (conjugué) للعدد 2-3i هو:", options: ["2+3i", "-2+3i", "-2-3i", "2-3i"], correct: 0 },
+        { text: "مشتقة sin(x²) هي:", options: ["2x cos(x²)", "cos(x²)", "2x sin(x²)", "x² cos(x²)"], correct: 0 },
+        { text: "lim (e^x - 1)/x عندما x→0 = ?", options: ["0", "1", "e", "∞"], correct: 1 },
+        { text: "∫ e^x dx = ?", options: ["e^x + C", "ln x + C", "x e^x + C", "e^(2x)+C"], correct: 0 },
+        { text: "المميز Δ للمعادلة 2x²+3x+1 = 0 هو:", options: ["1", "9", "5", "0"], correct: 0 },
+        { text: "قيمة cos(π/3) تساوي:", options: ["1/2", "√3/2", "1", "0"], correct: 0 },
+        { text: "معامل ذو الحدين C(5,2) = ?", options: ["10", "5", "20", "7"], correct: 0 },
+        { text: "إذا كانت المتتالية (U_n) معرفة بـ U_{n+1}=2U_n+1 و U_0=0 فإن U_2 = ?", options: ["1", "3", "5", "7"], correct: 1 },
+        { text: "∫ (x² + 1) dx من 0 إلى 2 = ?", options: ["14/3", "10/3", "6", "8"], correct: 0 }
+    ];
 
-    // بيانات اللعبة
-    let cardsArray = [];          // تخزين عناصر البطاقات (DOM)
-    let cardValues = [];          // قيم الرموز لكل بطاقة (مثل 🍎)
-    let matchedFlags = [];        // boolean هل تم التطابق
-    let flippedIndices = [];      // مؤشرات البطاقات المقلوبة حالياً (max 2)
-    let lockBoardFlag = false;    // قفل المجلس أثناء المقارنة أو التأخير
-    let moves = 0;
-    let matches = 0;
-    let timerSeconds = 0;
+    // متغيرات اللعبة
+    let currentQuestions = [];      // الأسئلة المختارة للجولة الحالية (10 أسئلة)
+    let currentIndex = 0;           // السؤال الحالي 0-based
+    let userAnswers = new Array(10).fill(null);   // -1 = لم يجب, else index الخيار
+    let score = 0;                  // عدد الإجابات الصحيحة
+    let gameActive = false;         // هل اللعبة قيد التشغيل (عرض الأسئلة)
+    let answerLock = false;         // هل تم الإجابة على السؤال الحالي (يمنع التعديل)
+    let startTime = null;
     let timerInterval = null;
-    let gameActive = false;        // هل اللعبة نشطة (لم تنته بعد)
-    let totalPairs = 8;            // 8 أزواج = 16 بطاقة
+    let totalTimeSeconds = 0;
 
-    // قائمة الرموز الجذابة (8 أزواج)
-    const symbols = ['🍎', '🍒', '🍉', '🍇', '🥝', '🍊', '🍋', '🍑'];
+    // عناصر DOM
+    const menuPage = document.getElementById('menu-page');
+    const gamePage = document.getElementById('game-page');
+    const scoresPage = document.getElementById('scores-page');
+    const helpPage = document.getElementById('help-page');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const playerNameInput = document.getElementById('playerName');
+    const startGameBtn = document.getElementById('startGameBtn');
+    const restartGameBtn = document.getElementById('restartGameBtn');
+    const nextBtn = document.getElementById('nextQuestionBtn');
+    const questionTextDiv = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const qCurrentSpan = document.getElementById('qCurrent');
+    const qTotalSpan = document.getElementById('qTotal');
+    const scoreCountSpan = document.getElementById('scoreCount');
+    const totalQSpan = document.getElementById('totalQ');
+    const timerDisplaySpan = document.getElementById('timerDisplay');
+    const gameMessageDiv = document.getElementById('gameMessage');
+    const clearLeaderboardBtn = document.getElementById('clearLeaderboard');
 
-    // قائمة النتائج العليا (localStorage)
-    let highScores = [];
+    let leaderboard = [];  // [{ name, score, total, time }]
 
-    // ------------------- الوظائف المساعدة -------------------
-    function loadHighScoresFromStorage() {
-        const stored = localStorage.getItem('memoryGameScores');
+    // تحميل النتائج من localStorage
+    function loadLeaderboard() {
+        const stored = localStorage.getItem('mathBacLeaderboard');
         if(stored) {
             try {
-                highScores = JSON.parse(stored);
-            } catch(e) { highScores = []; }
+                leaderboard = JSON.parse(stored);
+            } catch(e) { leaderboard = []; }
         } else {
-            highScores = [];
+            leaderboard = [];
         }
-        // ترتيب مسبق: حسب الحركات تصاعدياً ثم الزمن تصاعدياً
-        highScores.sort((a,b) => {
-            if(a.moves !== b.moves) return a.moves - b.moves;
-            return a.time - b.time;
+        leaderboard.sort((a,b) => {
+            if(a.score !== b.score) return b.score - a.score; // أعلى نقاط أولاً
+            return a.time - b.time;   // وقت أقل أفضل
         });
-        if(highScores.length > 5) highScores = highScores.slice(0,5);
+        if(leaderboard.length > 5) leaderboard = leaderboard.slice(0,5);
+        renderLeaderboard();
     }
 
-    function saveHighScoresToStorage() {
-        localStorage.setItem('memoryGameScores', JSON.stringify(highScores));
+    function saveLeaderboard() {
+        localStorage.setItem('mathBacLeaderboard', JSON.stringify(leaderboard));
     }
 
-    // إضافة نتيجة جديدة (اسم, حركات, وقت)
-    function addScoreIfQualified(playerName, movesUsed, timeSec) {
-        if(!playerName || playerName.trim() === "") playerName = "بطل مجهول";
-        const newEntry = { name: playerName.trim(), moves: movesUsed, time: timeSec, date: Date.now() };
-        highScores.push(newEntry);
-        // ترتيب واقتصاص أفضل 5
-        highScores.sort((a,b) => {
-            if(a.moves !== b.moves) return a.moves - b.moves;
-            return a.time - b.time;
-        });
-        if(highScores.length > 5) highScores = highScores.slice(0,5);
-        saveHighScoresToStorage();
-        renderHighScoresUI();
-    }
-
-    // عرض قائمة الأبطال في صفحة النتائج
-    function renderHighScoresUI() {
-        const scoresContainer = document.getElementById('highScoresList');
-        if(!scoresContainer) return;
-        if(highScores.length === 0) {
-            scoresContainer.innerHTML = '<div class="empty-scores">📭 لا توجد نتائج بعد، العب وسجل اسمك!</div>';
+    function renderLeaderboard() {
+        const container = document.getElementById('leaderboardList');
+        if(!container) return;
+        if(leaderboard.length === 0) {
+            container.innerHTML = '<div class="empty-scores" style="text-align:center; padding:20px;">📭 لا توجد نتائج بعد، كن الأول!</div>';
             return;
         }
         let html = '';
-        highScores.forEach((score, idx) => {
+        leaderboard.forEach((entry, idx) => {
             html += `
                 <div class="score-item">
-                    <span><span class="score-rank">${idx+1}</span>  ${escapeHtml(score.name)}</span>
-                    <span>🏃‍♂️ ${score.moves} حركات  |  ⏱️ ${score.time} ث</span>
+                    <span>🏅 ${idx+1}. ${escapeHtml(entry.name)}</span>
+                    <span>✅ ${entry.score}/${entry.total}  |  ⏱️ ${entry.time} ث</span>
                 </div>
             `;
         });
-        scoresContainer.innerHTML = html;
+        container.innerHTML = html;
     }
 
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if(m === '&') return '&amp;';
-            if(m === '<') return '&lt;';
-            if(m === '>') return '&gt;';
-            return m;
-        });
-    }
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-    // إنشاء لوحة اللعب (تهيئة أو إعادة ضبط)
-    function buildBoard() {
-        boardDiv.innerHTML = '';
-        cardsArray = [];
-        matchedFlags = new Array(16).fill(false);
-        // توليد قيم عشوائية (مزدوجة)
-        let deck = [...symbols, ...symbols];
-        for(let i = deck.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [deck[i], deck[j]] = [deck[j], deck[i]];
+    // اختيار 10 أسئلة عشوائية من البنك (بدون تكرار)
+    function selectRandomQuestions() {
+        const shuffled = [...QUESTION_BANK];
+        for(let i=shuffled.length-1; i>0; i--) {
+            const j = Math.floor(Math.random()*(i+1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
-        cardValues = deck;
-        for(let i = 0; i < 16; i++) {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.setAttribute('data-index', i);
-            card.textContent = '?';
-            card.addEventListener('click', () => onCardClick(i));
-            boardDiv.appendChild(card);
-            cardsArray.push(card);
-        }
-        updateAllCardsVisual();
+        return shuffled.slice(0,10);
     }
 
-    // تحديث المظهر لكل البطاقات بناءً على matchedFlags وحالة flippedIndices
-    function updateAllCardsVisual() {
-        for(let i = 0; i < cardsArray.length; i++) {
-            const card = cardsArray[i];
-            const isMatched = matchedFlags[i];
-            const isFlipped = flippedIndices.includes(i);
-            if(isMatched) {
-                card.textContent = cardValues[i];
-                card.classList.add('matched');
-                card.classList.remove('flipped');
-            } else if(isFlipped) {
-                card.textContent = cardValues[i];
-                card.classList.add('flipped');
-                card.classList.remove('matched');
-            } else {
-                card.textContent = '?';
-                card.classList.remove('flipped', 'matched');
+    // بدء اختبار جديد
+    function initNewGame() {
+        if(timerInterval) clearInterval(timerInterval);
+        currentQuestions = selectRandomQuestions();
+        currentIndex = 0;
+        userAnswers.fill(null);
+        score = 0;
+        answerLock = false;
+        gameActive = true;
+        totalTimeSeconds = 0;
+        timerDisplaySpan.innerText = "0";
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+            if(gameActive) {
+                totalTimeSeconds = Math.floor((Date.now() - startTime) / 1000);
+                timerDisplaySpan.innerText = totalTimeSeconds;
             }
-        }
+        }, 200);
+        scoreCountSpan.innerText = "0";
+        totalQSpan.innerText = "10";
+        qTotalSpan.innerText = "10";
+        gameMessageDiv.innerHTML = "✨ اختر الإجابة الصحيحة لكل سؤال ✨";
+        nextBtn.style.display = "none";
+        renderCurrentQuestion();
     }
 
-    // تحديث بطاقة واحدة (بعد تغيير الحالة)
-    function updateSingleCardVisual(idx) {
-        if(!cardsArray[idx]) return;
-        const card = cardsArray[idx];
-        const isMatched = matchedFlags[idx];
-        const isFlipped = flippedIndices.includes(idx);
-        if(isMatched) {
-            card.textContent = cardValues[idx];
-            card.classList.add('matched');
-            card.classList.remove('flipped');
-        } else if(isFlipped) {
-            card.textContent = cardValues[idx];
-            card.classList.add('flipped');
-            card.classList.remove('matched');
-        } else {
-            card.textContent = '?';
-            card.classList.remove('flipped', 'matched');
-        }
-    }
-
-    // إنهاء اللعبة (نجاح)
-    function endGameWin() {
+    // عرض السؤال الحالي
+    function renderCurrentQuestion() {
         if(!gameActive) return;
-        gameActive = false;
-        if(timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
+        const q = currentQuestions[currentIndex];
+        if(!q) return;
+        questionTextDiv.innerHTML = q.text;
+        // إنشاء أزرار الخيارات
+        optionsContainer.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = opt;
+            btn.setAttribute('data-opt-index', idx);
+            btn.addEventListener('click', () => onAnswerSelected(idx));
+            if(answerLock) btn.disabled = true;
+            optionsContainer.appendChild(btn);
+        });
+        qCurrentSpan.innerText = currentIndex+1;
+        scoreCountSpan.innerText = score;
+        // إذا كان السؤال قد أجيب عليه سابقاً (في حالة إعادة عرض)
+        if(userAnswers[currentIndex] !== null) {
+            answerLock = true;
+            const selectedIdx = userAnswers[currentIndex];
+            highlightCorrectAndWrong(selectedIdx, q.correct);
+            nextBtn.style.display = "block";
+        } else {
+            answerLock = false;
+            nextBtn.style.display = "none";
         }
-        gameStatusDiv.innerHTML = '🎉🎉 فوز رائع! لقد أكملت جميع التطابقات 🎉🎉';
-        // حفظ النتيجة إذا كانت تستحق
-        let currentPlayer = playerNameInput.value.trim();
-        if(currentPlayer === "") currentPlayer = "بطل مجهول";
-        addScoreIfQualified(currentPlayer, moves, timerSeconds);
-        gameStatusDiv.innerHTML += `<br>🏆 تم حفظ النتيجة (${currentPlayer}) 🏆`;
-        lockBoardFlag = true; // منع أي تفاعل بعد الفوز
     }
 
-    // فحص الفوز
-    function checkGameComplete() {
-        if(matches === totalPairs) {
-            endGameWin();
-        }
-    }
-
-    // معالجة النقر على البطاقة
-    function onCardClick(clickedIdx) {
-        // شروط المنع
-        if(lockBoardFlag) return;
-        if(!gameActive) {
-            gameStatusDiv.innerHTML = '⚠️ اضغط "لعبة جديدة" لبدء الجولة ⚠️';
+    // عند اختيار إجابة
+    function onAnswerSelected(selectedIdx) {
+        if(!gameActive) return;
+        if(answerLock) {
+            gameMessageDiv.innerHTML = "⚠️ لقد أجبت بالفعل على هذا السؤال، انتقل إلى التالي ⚠️";
             return;
         }
-        if(matchedFlags[clickedIdx]) return;  // متطابقة بالفعل
-        if(flippedIndices.includes(clickedIdx)) return; // مقلوبة بالفعل
-        if(flippedIndices.length >= 2) return; // يوجد اثنان قيد الانتظار
-
-        // إضافة البطاقة المقلوبة
-        flippedIndices.push(clickedIdx);
-        updateSingleCardVisual(clickedIdx);
-
-        // إذا وصلنا لبطاقتين مقلوبتين
-        if(flippedIndices.length === 2) {
-            // زيادة عدد الحركات
-            moves++;
-            moveSpan.innerText = moves;
-            const idx1 = flippedIndices[0];
-            const idx2 = flippedIndices[1];
-            const val1 = cardValues[idx1];
-            const val2 = cardValues[idx2];
-            // قفل المجلس أثناء المقارنة
-            lockBoardFlag = true;
-
-            if(val1 === val2) {
-                // تطابق ناجح
-                matches++;
-                matchesSpan.innerText = matches;
-                matchedFlags[idx1] = true;
-                matchedFlags[idx2] = true;
-                // تحديث المظهر
-                updateSingleCardVisual(idx1);
-                updateSingleCardVisual(idx2);
-                // مسح قائمة المقلوبة
-                flippedIndices = [];
-                lockBoardFlag = false;
-                gameStatusDiv.innerHTML = '✅ تطابق رائع! استمر ✅';
-                checkGameComplete();
-                // إذا انتهت اللعبة بعد الفوز، نمنع أي حركات لاحقة
-                if(matches === totalPairs) {
-                    // endGameWin عالجت التايمر والفلاق
-                }
-            } else {
-                // غير متطابقان: إعادة إخفائهما بعد تأخير
-                gameStatusDiv.innerHTML = '❌ غير متطابق، ركز وتذكر! ❌';
-                setTimeout(() => {
-                    // إزالة البطاقات المقلوبة من القائمة وإعادة مظهرها
-                    flippedIndices = [];
-                    updateAllCardsVisual();
-                    lockBoardFlag = false;
-                    gameStatusDiv.innerHTML = '✨ اقلب زوجاً جديداً ✨';
-                }, 700);
-            }
+        const q = currentQuestions[currentIndex];
+        const isCorrect = (selectedIdx === q.correct);
+        if(isCorrect) {
+            score++;
+            scoreCountSpan.innerText = score;
+            gameMessageDiv.innerHTML = "✅ إجابة صحيحة! ✅";
         } else {
-            // أول بطاقة فقط
-            gameStatusDiv.innerHTML = '🔍 اختر البطاقة الثانية 🔍';
+            gameMessageDiv.innerHTML = `❌ خطأ! الإجابة الصحيحة هي: ${q.options[q.correct]} ❌`;
+        }
+        // تسجيل الإجابة
+        userAnswers[currentIndex] = selectedIdx;
+        answerLock = true;
+        // تعطيل الأزرار وإظهار التصحيح
+        const allOptBtns = document.querySelectorAll('.option-btn');
+        allOptBtns.forEach(btn => btn.disabled = true);
+        highlightCorrectAndWrong(selectedIdx, q.correct);
+        // إظهار زر التالي
+        nextBtn.style.display = "block";
+        // التحقق مما إذا كان هذا آخر سؤال
+        if(currentIndex + 1 === currentQuestions.length) {
+            nextBtn.textContent = "🏁 إنهاء الاختبار 🏁";
+        } else {
+            nextBtn.textContent = "➡️ السؤال التالي";
         }
     }
 
-    // إعادة ضبط اللعبة بالكامل (بدء جديد)
-    function resetAndNewGame() {
-        // إيقاف المؤقت القديم
-        if(timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-        // إعادة تعيين المتغيرات
-        flippedIndices = [];
-        lockBoardFlag = false;
-        moves = 0;
-        matches = 0;
-        timerSeconds = 0;
-        gameActive = true;
-        moveSpan.innerText = moves;
-        matchesSpan.innerText = matches;
-        timerSpan.innerText = timerSeconds;
-        // بناء لوحة جديدة (عشوائية)
-        buildBoard();
-        // تحديث اسم اللاعب الظاهر في صفحة اللعبة
-        let currentPlayer = playerNameInput.value.trim();
-        if(currentPlayer === "") currentPlayer = "بطل مجهول";
-        currentGamePlayerSpan.innerText = currentPlayer;
-        gameStatusDiv.innerHTML = '🎲 لعبة جديدة! اقلب البطاقات وابدأ 🎲';
-        // بدء المؤقت
-        timerInterval = setInterval(() => {
-            if(gameActive && !lockBoardFlag) {
-                timerSeconds++;
-                timerSpan.innerText = timerSeconds;
-            } else if(!gameActive) {
-                // إذا انتهت اللعبة لا نزيد الوقت
-            } else if(lockBoardFlag) {
-                // أثناء انتظار المقارنة لا نزيد الوقت لعدم التحيز لكنه ليس مهماً جداً، نتركه يزيد بشكل طبيعي
-                timerSeconds++;
-                timerSpan.innerText = timerSeconds;
-            } else {
-                timerSeconds++;
-                timerSpan.innerText = timerSeconds;
+    function highlightCorrectAndWrong(selectedIdx, correctIdx) {
+        const btns = document.querySelectorAll('.option-btn');
+        btns.forEach((btn, idx) => {
+            btn.classList.remove('correct-highlight', 'wrong-highlight');
+            if(idx === correctIdx) {
+                btn.classList.add('correct-highlight');
+            } else if(idx === selectedIdx && idx !== correctIdx) {
+                btn.classList.add('wrong-highlight');
             }
-        }, 1000);
+        });
     }
 
-    // تبديل الصفحات
-    function showPage(pageId) {
-        pages.forEach(page => {
-            page.classList.remove('active-page');
+    // الانتقال للسؤال التالي أو إنهاء الاختبار
+    function nextQuestion() {
+        if(!gameActive) return;
+        if(!answerLock) {
+            gameMessageDiv.innerHTML = "⚠️ يجب عليك الإجابة على السؤال أولاً ⚠️";
+            return;
+        }
+        if(currentIndex + 1 < currentQuestions.length) {
+            // انتقل للسؤال التالي
+            currentIndex++;
+            answerLock = false;
+            renderCurrentQuestion();
+        } else {
+            // نهاية الاختبار
+            endQuiz();
+        }
+    }
+
+    function endQuiz() {
+        if(timerInterval) clearInterval(timerInterval);
+        gameActive = false;
+        const finalScore = score;
+        const totalQuestions = currentQuestions.length;
+        const finalTime = totalTimeSeconds;
+        // تسجيل النتيجة في الـ Leaderboard إذا كانت تستحق
+        let playerName = playerNameInput.value.trim();
+        if(playerName === "") playerName = "بطل رياضي";
+        addScoreToLeaderboard(playerName, finalScore, totalQuestions, finalTime);
+        gameMessageDiv.innerHTML = `🎉 انتهى الاختبار! نتيجتك: ${finalScore}/${totalQuestions} في زمن ${finalTime} ثانية. 🎉`;
+        // عرض رسالة بالصفحة وإظهار زر إعادة
+        nextBtn.style.display = "none";
+        // تعطيل خيارات الأسئلة
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(btn => btn.disabled = true);
+        // زر إعادة اللعبة موجود بالفعل
+    }
+
+    function addScoreToLeaderboard(name, scoreValue, total, timeSec) {
+        leaderboard.push({ name: name, score: scoreValue, total: total, time: timeSec });
+        leaderboard.sort((a,b) => {
+            if(a.score !== b.score) return b.score - a.score;
+            return a.time - b.time;
         });
-        const activePage = document.getElementById(`${pageId}-page`);
-        if(activePage) activePage.classList.add('active-page');
-        // تحديث active على الأزرار
+        if(leaderboard.length > 5) leaderboard = leaderboard.slice(0,5);
+        saveLeaderboard();
+        renderLeaderboard();
+    }
+
+    // إعادة ضبط اللعبة (بداية جديدة)
+    function resetAndPlay() {
+        if(timerInterval) clearInterval(timerInterval);
+        initNewGame();
+    }
+
+    // مسح قائمة الأبطال
+    function clearLeaderboardData() {
+        leaderboard = [];
+        saveLeaderboard();
+        renderLeaderboard();
+        gameMessageDiv.innerHTML = "🗑️ تم مسح قائمة الأبطال بنجاح";
+        setTimeout(() => { if(gameActive) gameMessageDiv.innerHTML = "✨ اختر الإجابة الصحيحة ✨"; }, 1500);
+    }
+
+    // التنقل بين الصفحات
+    function showPage(pageId) {
+        const pages = [menuPage, gamePage, scoresPage, helpPage];
+        pages.forEach(p => p.classList.remove('active-page'));
+        if(pageId === 'menu') menuPage.classList.add('active-page');
+        else if(pageId === 'game') gamePage.classList.add('active-page');
+        else if(pageId === 'scores') scoresPage.classList.add('active-page');
+        else if(pageId === 'help') helpPage.classList.add('active-page');
         navBtns.forEach(btn => {
             btn.classList.remove('active');
-            if(btn.getAttribute('data-page') === pageId) {
-                btn.classList.add('active');
+            if(btn.getAttribute('data-page') === pageId) btn.classList.add('active');
+        });
+        if(pageId === 'scores') renderLeaderboard();
+        if(pageId === 'game' && !gameActive) {
+            // إذا كانت اللعبة غير نشطة (لم تبدأ أو انتهت) نعرض رسالة تشجع على البدء
+            if(!gameActive && document.getElementById('questionText').innerText === '...') {
+                gameMessageDiv.innerHTML = "🚀 اضغط 'ابدأ الاختبار' من القائمة أو 'إعادة الاختبار' للبدء";
             }
-        });
-        // إذا تم التوجه إلى صفحة الأبطال، نقوم بتحديث قائمة النتائج
-        if(pageId === 'scores') {
-            renderHighScoresUI();
-        }
-        // إذا تم التوجه إلى صفحة اللعبة نحدّث اسم اللاعب الحالي في الـ UI
-        if(pageId === 'game') {
-            let pName = playerNameInput.value.trim();
-            if(pName === "") pName = "بطل مجهول";
-            currentGamePlayerSpan.innerText = pName;
         }
     }
 
-    // إعادة تعيين النتائج (مسح الـ high scores)
-    function clearHighScores() {
-        highScores = [];
-        saveHighScoresToStorage();
-        renderHighScoresUI();
-        gameStatusDiv.innerHTML = '🗑️ تم مسح قائمة الأبطال بنجاح';
-        setTimeout(() => {
-            if(document.getElementById('game-page').classList.contains('active-page'))
-                gameStatusDiv.innerHTML = '✨ اقلب البطاقات ✨';
-        }, 1500);
-    }
-
-    // تهيئة الصفحة الرئيسية وإعدادات أولية
-    function initGameApp() {
-        loadHighScoresFromStorage();
-        renderHighScoresUI();
-        // بناء أولي للوحة (غير نشطة حتى يبدأ اللاعب)
-        buildBoard();
-        gameActive = false;  // اللعبة غير نشطة حتى الضغط على "لعبة جديدة" أو زر البدء
-        matches = 0; moves = 0; timerSeconds = 0;
-        matchesSpan.innerText = matches;
-        moveSpan.innerText = moves;
-        timerSpan.innerText = timerSeconds;
-        totalPairsSpan.innerText = totalPairs;
-        if(timerInterval) clearInterval(timerInterval);
-        timerInterval = null;
-        lockBoardFlag = false;
-        flippedIndices = [];
-        gameStatusDiv.innerHTML = '🚀 اضغط "لعبة جديدة" لبدء التحدي';
-        // إظهار صفحة القائمة افتراضياً
-        showPage('menu');
-        // ربط الأزرار
-        newGameBtn.onclick = () => {
-            resetAndNewGame();
-            showPage('game');
-        };
-        startFromMenuBtn.onclick = () => {
-            resetAndNewGame();
-            showPage('game');
-        };
-        clearScoresBtn.onclick = () => {
-            clearHighScores();
-        };
-        // أزرار التنقل
-        navBtns.forEach(btn => {
-            btn.onclick = () => {
-                const page = btn.getAttribute('data-page');
-                showPage(page);
-                // إذا انتقلنا للعبة من صفحة أخرى ولم تكن اللعبة نشطة نعرض الحالة ولكن لا نعيد ضبط تلقائياً
-                if(page === 'game' && !gameActive) {
-                    // لكن لو اللعبة غير نشطة بسبب انتهاء سابق، يمكن عرض رسالة
-                    if(matches === totalPairs && matches>0) {
-                        gameStatusDiv.innerHTML = '🏁 اللعبة منتهية، اضغط "لعبة جديدة" للعب مرة أخرى';
-                    } else if(matches === 0 && moves === 0 && timerSeconds === 0 && !gameActive){
-                        gameStatusDiv.innerHTML = '🎮 اضغط "لعبة جديدة" لبدء المغامرة 🎮';
-                    }
-                }
-            };
+    // ربط الأحداث
+    startGameBtn.addEventListener('click', () => {
+        resetAndPlay();
+        showPage('game');
+    });
+    restartGameBtn.addEventListener('click', () => {
+        resetAndPlay();
+        if(!gamePage.classList.contains('active-page')) showPage('game');
+        else renderCurrentQuestion();
+    });
+    nextBtn.addEventListener('click', nextQuestion);
+    clearLeaderboardBtn.addEventListener('click', clearLeaderboardData);
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.getAttribute('data-page');
+            showPage(page);
         });
-        // ضبط اسم اللاعب الافتراضي
-        if(!playerNameInput.value) playerNameInput.value = "مغامر";
-        currentGamePlayerSpan.innerText = playerNameInput.value;
-        playerNameInput.addEventListener('input', () => {
-            let val = playerNameInput.value.trim();
-            if(val === "") val = "مغامر";
-            currentGamePlayerSpan.innerText = val;
-        });
-    }
+    });
 
-    // بدء التشغيل
-    initGameApp();
+    // تهيئة أولية
+    loadLeaderboard();
+    // عرض واجهة القائمة افتراضياً
+    showPage('menu');
+    // تحضير البيانات ولكن دون بدء الاختبار
+    gameActive = false;
+    questionTextDiv.innerHTML = "📚 اضغط 'ابدأ الاختبار' لمواجهة أسئلة البكالوريا";
+    optionsContainer.innerHTML = '<div style="text-align:center; color:#ffefcf;">🔘 ستظهر الخيارات بعد البدء</div>';
+    nextBtn.style.display = "none";
+    qTotalSpan.innerText = "10";
+    totalQSpan.innerText = "10";
+    scoreCountSpan.innerText = "0";
+    timerDisplaySpan.innerText = "0";
 </script>
 </body>
 </html>
