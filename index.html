@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>🧠 باكالوريا数学挑战 | 高阶数学竞赛</title>
+    <title>🐍 الثعبان الذهبي | Snake Game</title>
     <style>
         * {
             margin: 0;
@@ -13,8 +13,8 @@
         }
 
         body {
-            background: linear-gradient(145deg, #101f2c 0%, #1b3a4b 100%);
-            font-family: 'Segoe UI', 'Tajawal', 'Poppins', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(145deg, #0a1f1a 0%, #0c2b24 100%);
+            font-family: 'Segoe UI', 'Tajawal', 'Poppins', monospace;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -22,644 +22,624 @@
             padding: 20px;
         }
 
-        /* الحاوية الرئيسية */
-        .game-container {
-            max-width: 850px;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(8px);
-            border-radius: 2.5rem;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+        .game-wrapper {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(4px);
+            border-radius: 2rem;
             padding: 1.2rem;
-            transition: all 0.3s ease;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.1);
         }
 
-        /* شريط التنقل (الصفحات الفرعية) */
-        .nav-bar {
+        .game-panel {
+            background: #0d2c24;
+            border-radius: 1.8rem;
+            padding: 1rem;
+            box-shadow: inset 0 0 8px #2f7a5e, 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 1.2rem;
+            box-shadow: 0 0 0 3px #ffd966, 0 10px 25px rgba(0,0,0,0.3);
+            cursor: pointer;
+            background-color: #1a3a32;
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: #071f1bcc;
+            border-radius: 80px;
+            color: #f7ecc7;
+            font-weight: bold;
+        }
+
+        .score-box, .high-box {
+            background: #00000066;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+        .score-box span, .high-box span {
+            color: #ffcf4a;
+            font-size: 1.5rem;
+            margin-left: 8px;
+        }
+
+        .controls {
             display: flex;
             justify-content: center;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.8rem;
-            border-bottom: 2px solid rgba(100, 200, 200, 0.4);
-            padding-bottom: 0.8rem;
-        }
-
-        .nav-btn {
-            background: rgba(20, 40, 55, 0.8);
-            border: none;
-            padding: 0.6rem 1.4rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            font-family: inherit;
-            border-radius: 60px;
-            color: #eef4ff;
-            cursor: pointer;
-            transition: 0.2s;
-            backdrop-filter: blur(4px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .nav-btn.active {
-            background: #2aa9c9;
-            color: #0a1a24;
-            box-shadow: 0 0 12px #5bc8ff;
-            transform: scale(1.02);
-        }
-        .nav-btn:hover:not(.active) {
-            background: #2f7e97;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* الصفحات */
-        .page {
-            display: none;
-            animation: fadeIn 0.35s ease;
-        }
-        .page.active-page {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-
-        /* لوحة السؤال */
-        .quiz-header {
-            background: #0a232ee0;
-            border-radius: 2rem;
-            padding: 18px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
             gap: 12px;
-            color: #ffefcf;
-            font-weight: bold;
-            backdrop-filter: blur(4px);
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
-        .stat-box {
-            background: #00000066;
-            padding: 5px 16px;
-            border-radius: 40px;
-            font-size: 1.1rem;
-        }
-        .question-text {
-            background: #fffcf0;
-            padding: 25px 20px;
-            border-radius: 2rem;
-            font-size: 1.4rem;
-            text-align: center;
-            color: #003c4a;
-            font-weight: bold;
-            box-shadow: inset 0 0 0 2px #ffe1a0, 0 10px 20px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-            line-height: 1.4;
-        }
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .option-btn {
-            background: #1e4a5f;
+
+        button {
+            background: #2f6b5c;
             border: none;
-            border-radius: 60px;
-            padding: 14px 12px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #f9f3e2;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 5px 0 #0b2a36;
             font-family: inherit;
-        }
-        .option-btn:hover:not(:disabled) {
-            background: #2f7a92;
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 #0b2a36;
-        }
-        .option-btn.correct-highlight {
-            background: #2c9c6e;
-            box-shadow: 0 0 8px #a3ffc4;
-            border: 1px solid #bbffdd;
-        }
-        .option-btn.wrong-highlight {
-            background: #bc4e2c;
-            text-decoration: line-through;
-        }
-        .option-btn:disabled {
-            opacity: 0.8;
-            cursor: default;
-            transform: none;
-        }
-        .next-btn {
-            background: #ffb347;
-            font-size: 1.2rem;
-            padding: 12px 28px;
-            width: 100%;
-            border-radius: 60px;
             font-weight: bold;
-            color: #1e2f3a;
-            transition: 0.2s;
-        }
-        .next-btn:active { transform: scale(0.97);}
-        .reset-game-btn {
-            background: #a5422c;
-            color: white;
-            margin-top: 15px;
-        }
-        .finish-panel {
-            text-align: center;
-            background: #09313ee0;
-            border-radius: 2rem;
-            padding: 25px;
-            margin-top: 20px;
-        }
-        /* صفحة القائمة */
-        .menu-card {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(12px);
-            border-radius: 48px;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        .menu-card h1 {
-            font-size: 2rem;
-            color: #ffecb3;
-        }
-        .name-input {
-            background: #fff8e7;
-            border: none;
-            padding: 12px 20px;
+            padding: 8px 20px;
             border-radius: 60px;
             font-size: 1rem;
-            width: 80%;
-            margin: 20px 0;
-            text-align: center;
-            font-weight: bold;
+            color: #faf0cf;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 4px 0 #15423a;
         }
-        .start-btn {
-            background: #2aa9c9;
-            font-size: 1.5rem;
-            padding: 12px 35px;
-            box-shadow: 0 8px 0 #116277;
-            transform: translateY(-2px);
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #15423a;
         }
-        /* صفحة النتائج */
-        .score-list {
-            background: #06222ce0;
-            border-radius: 2rem;
-            padding: 20px;
+
+        .direction-pad {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
             margin-top: 20px;
         }
-        .score-item {
+        .dir-row {
             display: flex;
-            justify-content: space-between;
-            background: #f9f0da20;
-            margin: 12px 0;
-            padding: 12px 20px;
-            border-radius: 60px;
+            justify-content: center;
+            gap: 20px;
+        }
+        .dir-btn {
+            background: #2e5a4e;
+            font-size: 1.8rem;
+            padding: 10px 25px;
+            box-shadow: 0 5px 0 #1a3e35;
+            border-radius: 50px;
+            min-width: 80px;
+        }
+        .dir-btn:active {
+            transform: translateY(3px);
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 12px;
             font-weight: bold;
-            color: #ffefcf;
+            color: #ffdd99;
+            background: #00000055;
+            padding: 6px;
+            border-radius: 60px;
+            font-size: 0.9rem;
         }
-        .clear-scores {
-            background: #8b3c2a;
-            margin-top: 15px;
+
+        @media (max-width: 650px) {
+            .dir-btn {
+                font-size: 1.3rem;
+                padding: 8px 18px;
+                min-width: 65px;
+            }
+            .score-box, .high-box {
+                font-size: 0.9rem;
+                padding: 4px 12px;
+            }
+            canvas {
+                width: 95%;
+                height: auto;
+            }
         }
-        /* صفحة التعليمات */
-        .instructions {
-            background: #062a33cc;
-            border-radius: 2rem;
-            padding: 25px;
-            line-height: 1.8;
-            color: #f3e9c0;
-        }
-        .instructions h3 {
-            color: #ffcf7a;
-        }
-        hr { margin: 15px 0; border-color: #4e9aaa; }
         footer {
             text-align: center;
-            margin-top: 20px;
             font-size: 0.7rem;
-            color: #bbdce8;
-        }
-        @media (max-width: 600px) {
-            .options-grid { grid-template-columns: 1fr; }
-            .question-text { font-size: 1.1rem; }
-            .stat-box { font-size: 0.85rem; }
+            margin-top: 15px;
+            color: #9bc0b5;
         }
     </style>
 </head>
 <body>
-<div class="game-container">
-    <div class="nav-bar">
-        <button class="nav-btn" data-page="menu">🏠 القائمة</button>
-        <button class="nav-btn" data-page="game">🧮 التحدي</button>
-        <button class="nav-btn" data-page="scores">🏆 الأبطال</button>
-        <button class="nav-btn" data-page="help">📘 التعليمات</button>
-    </div>
-
-    <!-- الصفحة 1: القائمة الرئيسية -->
-    <div id="menu-page" class="page">
-        <div class="menu-card">
-            <h1>⚡ بكالوريا数学挑战 ⚡</h1>
-            <p style="color:#c3e2f0; margin:10px 0">أسئلة تفاضل، تكامل، أعداد مركبة، نهايات، احتمالات ... للمستوى العالي</p>
-            <div style="margin: 25px 0;">
-                <input type="text" id="playerName" class="name-input" placeholder="اسم البطل" maxlength="20" value="عبقري الرياضيات">
-                <br>
-                <button id="startGameBtn" class="start-btn">🎯 ابدأ الاختبار</button>
+<div>
+    <div class="game-wrapper">
+        <div class="game-panel">
+            <div class="info-bar">
+                <div class="score-box">🍎 النقاط: <span id="scoreValue">0</span></div>
+                <div class="high-box">🏆 أعلى نتيجة: <span id="highScoreValue">0</span></div>
+                <button id="restartButton">🔄 إعادة التشغيل</button>
+                <button id="pauseButton">⏸️ إيقاف</button>
             </div>
-            <div style="background:#00000055; border-radius: 40px; padding: 12px;">
-                <p>⭐ 10 أسئلة عشوائية من بنك متقدم | كل سؤال 4 خيارات | سجل أفضل النتائج حسب الإجابات الصحيحة والزمن</p>
+
+            <canvas id="snakeCanvas" width="500" height="500"></canvas>
+
+            <div class="controls">
+                <div class="direction-pad">
+                    <div class="dir-row">
+                        <button class="dir-btn" data-dir="UP">▲ أعلى</button>
+                    </div>
+                    <div class="dir-row">
+                        <button class="dir-btn" data-dir="LEFT">◀ يسار</button>
+                        <button class="dir-btn" data-dir="DOWN">▼ أسفل</button>
+                        <button class="dir-btn" data-dir="RIGHT">يمين ▶</button>
+                    </div>
+                </div>
             </div>
+            <div class="status" id="gameStatusText">▶ استخدم الأسهم أو الأزرار للعب</div>
         </div>
+        <footer>🐍 تحكم سلس | تزداد السرعة كل 5 نقاط | تجنب الجدران والذات</footer>
     </div>
-
-    <!-- الصفحة 2: لعبة الأسئلة -->
-    <div id="game-page" class="page">
-        <div class="quiz-header">
-            <div class="stat-box">📋 السؤال <span id="qCurrent">1</span> / <span id="qTotal">10</span></div>
-            <div class="stat-box">✅ النتيجة: <span id="scoreCount">0</span> / <span id="totalQ">10</span></div>
-            <div class="stat-box">⏱️ الزمن: <span id="timerDisplay">0</span> ث</div>
-        </div>
-        <div id="questionText" class="question-text">...</div>
-        <div id="optionsContainer" class="options-grid"></div>
-        <button id="nextQuestionBtn" class="next-btn" style="display: none;">➡️ السؤال التالي</button>
-        <button id="restartGameBtn" class="reset-game-btn" style="background:#5f4339;">🔄 إعادة الاختبار</button>
-        <div id="gameMessage" style="text-align: center; margin-top: 15px; color:#ffdd99;"></div>
-    </div>
-
-    <!-- الصفحة 3: قائمة الأبطال -->
-    <div id="scores-page" class="page">
-        <div style="text-align: center;">
-            <h2 style="color:#ffdd99;">🏅 ترتيب العباقرة 🏅</h2>
-            <button id="clearLeaderboard" style="background:#aa4a2c; margin: 12px;">🗑️ مسح التصنيف</button>
-        </div>
-        <div id="leaderboardList" class="score-list">
-            <div class="empty-scores" style="text-align:center; padding:20px;">📭 لا توجد نتائج بعد، كن الأول!</div>
-        </div>
-    </div>
-
-    <!-- الصفحة 4: التعليمات -->
-    <div id="help-page" class="page">
-        <div class="instructions">
-            <h3>📐 كيف تلعب "بكالوريا数学挑战" ؟</h3>
-            <p>• اختبار يحتوي على 10 أسئلة عشوائية من مواضيع البكالوريا العليا (التحليل، الأعداد المركبة، الاحتمالات، المتتاليات، التكامل...).<br>
-            • كل سؤال له 4 إجابات، اختر الإجابة الصحيحة.<br>
-            • بعد اختيارك، سيظهر لك التصحيح (تتحول الخيارات إلى أخضر للصواب وأحمر للخطأ).<br>
-            • اضغط "السؤال التالي" للمتابعة. لا يمكن تغيير الإجابة بعد الاختيار.<br>
-            • يتم احتساب النقاط (كل إجابة صحيحة = 1) بالإضافة إلى الزمن الكلي لإنهاء الاختبار.<br>
-            • يتم حفظ أفضل 5 نتائج بناءً على (عدد الإجابات الصحيحة أولاً، ثم الزمن الأقل).<br>
-            🧠 <strong>نصائح:</strong> ركّز على المفاهيم العميقة، السرعة والدقة معًا تصنع الأسطورة.</p>
-            <hr>
-            <p>✨ تستطيع الانتقال بين القائمة، التحدي، الأبطال والتعليمات عبر الأزرار العلوية.<br>
-            🕒 المؤقت يبدأ فور ظهور السؤال الأول ولا يتوقف حتى نهاية الاختبار.</p>
-        </div>
-    </div>
-    <footer>🏆 أسئلة بمستوى البكالوريا – تحدي العقل الرياضي</footer>
 </div>
 
 <script>
-    // ======================= بنك الأسئلة (مستوى عالي) =======================
-    const QUESTION_BANK = [
-        { text: "ما قيمة النهاية lim (sin x)/x عندما x → 0 ?", options: ["0", "1", "∞", "غير موجودة"], correct: 1 },
-        { text: "مشتقة الدالة ln(x) هي:", options: ["1/x", "x", "e^x", "ln(x)"], correct: 0 },
-        { text: "∫ (1/x) dx = ?", options: ["ln|x| + C", "x ln x + C", "e^x + C", "1/x² + C"], correct: 0 },
-        { text: "مقياس العدد المركب 3+4i يساوي:", options: ["5", "7", "1", "√7"], correct: 0 },
-        { text: "احتمال الحصول على وجه واحد على الأقل عند رمي قطعة نقود مرتين:", options: ["1/4", "1/2", "3/4", "1"], correct: 2 },
-        { text: "مشتقة e^(2x) هي:", options: ["2e^(2x)", "e^(2x)", "2e^(x)", "e^(2x) * ln2"], correct: 0 },
-        { text: "إذا كان f(x)=x³ ، فإن f'(2) = ?", options: ["6", "12", "8", "4"], correct: 1 },
-        { text: "i² (وحدة تخيلية) تساوي:", options: ["1", "-1", "i", "-i"], correct: 1 },
-        { text: "مجموع جذري المعادلة x² - 5x + 6 = 0 هو:", options: ["5", "-5", "6", "-6"], correct: 0 },
-        { text: "النهاية lim (1 + 1/n)^n عندما n → ∞ هي:", options: ["1", "e", "∞", "0"], correct: 1 },
-        { text: "∫ cos x dx = ?", options: ["sin x + C", "-sin x + C", "cos x + C", "-cos x + C"], correct: 0 },
-        { text: "مشتقة tan x هي:", options: ["sec² x", "csc² x", "sec x tan x", "1/(1+x²)"], correct: 0 },
-        { text: "العمدة (Argument) للعدد المركب -1 يساوي:", options: ["0", "π", "π/2", "-π/2"], correct: 1 },
-        { text: "∫₀¹ x dx = ?", options: ["0.5", "1", "0", "2"], correct: 0 },
-        { text: "مشتقة arctan x هي:", options: ["1/(1+x²)", "1/(1-x²)", "x/(1+x²)", "arctan x"], correct: 0 },
-        { text: "إذا كان A و B حدثين مستقلين، P(A)=0.4 , P(B)=0.5 فإن P(A∩B) = ?", options: ["0.2", "0.9", "0.1", "0.5"], correct: 0 },
-        { text: "قيمة log₂ 8 هي:", options: ["2", "3", "4", "8"], correct: 1 },
-        { text: "مجموعة حل المتباينة |x-2| < 3 هي:", options: ["(-1,5)", "(-∞,5)", "(2,5)", "(-1,∞)"], correct: 0 },
-        { text: "المرافق (conjugué) للعدد 2-3i هو:", options: ["2+3i", "-2+3i", "-2-3i", "2-3i"], correct: 0 },
-        { text: "مشتقة sin(x²) هي:", options: ["2x cos(x²)", "cos(x²)", "2x sin(x²)", "x² cos(x²)"], correct: 0 },
-        { text: "lim (e^x - 1)/x عندما x→0 = ?", options: ["0", "1", "e", "∞"], correct: 1 },
-        { text: "∫ e^x dx = ?", options: ["e^x + C", "ln x + C", "x e^x + C", "e^(2x)+C"], correct: 0 },
-        { text: "المميز Δ للمعادلة 2x²+3x+1 = 0 هو:", options: ["1", "9", "5", "0"], correct: 0 },
-        { text: "قيمة cos(π/3) تساوي:", options: ["1/2", "√3/2", "1", "0"], correct: 0 },
-        { text: "معامل ذو الحدين C(5,2) = ?", options: ["10", "5", "20", "7"], correct: 0 },
-        { text: "إذا كانت المتتالية (U_n) معرفة بـ U_{n+1}=2U_n+1 و U_0=0 فإن U_2 = ?", options: ["1", "3", "5", "7"], correct: 1 },
-        { text: "∫ (x² + 1) dx من 0 إلى 2 = ?", options: ["14/3", "10/3", "6", "8"], correct: 0 }
-    ];
+    (function(){
+        // ------------------- إعدادات اللعبة -------------------
+        const canvas = document.getElementById('snakeCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreSpan = document.getElementById('scoreValue');
+        const highScoreSpan = document.getElementById('highScoreValue');
+        const restartBtn = document.getElementById('restartButton');
+        const pauseBtn = document.getElementById('pauseButton');
+        const statusDiv = document.getElementById('gameStatusText');
 
-    // متغيرات اللعبة
-    let currentQuestions = [];      // الأسئلة المختارة للجولة الحالية (10 أسئلة)
-    let currentIndex = 0;           // السؤال الحالي 0-based
-    let userAnswers = new Array(10).fill(null);   // -1 = لم يجب, else index الخيار
-    let score = 0;                  // عدد الإجابات الصحيحة
-    let gameActive = false;         // هل اللعبة قيد التشغيل (عرض الأسئلة)
-    let answerLock = false;         // هل تم الإجابة على السؤال الحالي (يمنع التعديل)
-    let startTime = null;
-    let timerInterval = null;
-    let totalTimeSeconds = 0;
+        // أبعاد الشبكة
+        const GRID_SIZE = 20;      // 20x20
+        const CELL_SIZE = canvas.width / GRID_SIZE; // 25px
 
-    // عناصر DOM
-    const menuPage = document.getElementById('menu-page');
-    const gamePage = document.getElementById('game-page');
-    const scoresPage = document.getElementById('scores-page');
-    const helpPage = document.getElementById('help-page');
-    const navBtns = document.querySelectorAll('.nav-btn');
-    const playerNameInput = document.getElementById('playerName');
-    const startGameBtn = document.getElementById('startGameBtn');
-    const restartGameBtn = document.getElementById('restartGameBtn');
-    const nextBtn = document.getElementById('nextQuestionBtn');
-    const questionTextDiv = document.getElementById('questionText');
-    const optionsContainer = document.getElementById('optionsContainer');
-    const qCurrentSpan = document.getElementById('qCurrent');
-    const qTotalSpan = document.getElementById('qTotal');
-    const scoreCountSpan = document.getElementById('scoreCount');
-    const totalQSpan = document.getElementById('totalQ');
-    const timerDisplaySpan = document.getElementById('timerDisplay');
-    const gameMessageDiv = document.getElementById('gameMessage');
-    const clearLeaderboardBtn = document.getElementById('clearLeaderboard');
+        // متغيرات الثعبان
+        let snake = [];     // مصفوفة من {x, y}
+        let food = { x: 12, y: 12 };
+        let direction = 'RIGHT';    // الاتجاه الحالي
+        let nextDirection = 'RIGHT';
+        let score = 0;
+        let highScore = 0;
+        let gameLoopInterval = null;
+        let isGameRunning = true;    // هل اللعبة نشطة (غير منتهية)
+        let isPaused = false;
+        let baseSpeedMs = 150;       // السرعة الأساسية (مللي ثانية)
+        let currentSpeedMs = baseSpeedMs;
 
-    let leaderboard = [];  // [{ name, score, total, time }]
-
-    // تحميل النتائج من localStorage
-    function loadLeaderboard() {
-        const stored = localStorage.getItem('mathBacLeaderboard');
-        if(stored) {
-            try {
-                leaderboard = JSON.parse(stored);
-            } catch(e) { leaderboard = []; }
-        } else {
-            leaderboard = [];
-        }
-        leaderboard.sort((a,b) => {
-            if(a.score !== b.score) return b.score - a.score; // أعلى نقاط أولاً
-            return a.time - b.time;   // وقت أقل أفضل
-        });
-        if(leaderboard.length > 5) leaderboard = leaderboard.slice(0,5);
-        renderLeaderboard();
-    }
-
-    function saveLeaderboard() {
-        localStorage.setItem('mathBacLeaderboard', JSON.stringify(leaderboard));
-    }
-
-    function renderLeaderboard() {
-        const container = document.getElementById('leaderboardList');
-        if(!container) return;
-        if(leaderboard.length === 0) {
-            container.innerHTML = '<div class="empty-scores" style="text-align:center; padding:20px;">📭 لا توجد نتائج بعد، كن الأول!</div>';
-            return;
-        }
-        let html = '';
-        leaderboard.forEach((entry, idx) => {
-            html += `
-                <div class="score-item">
-                    <span>🏅 ${idx+1}. ${escapeHtml(entry.name)}</span>
-                    <span>✅ ${entry.score}/${entry.total}  |  ⏱️ ${entry.time} ث</span>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
-
-    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
-    // اختيار 10 أسئلة عشوائية من البنك (بدون تكرار)
-    function selectRandomQuestions() {
-        const shuffled = [...QUESTION_BANK];
-        for(let i=shuffled.length-1; i>0; i--) {
-            const j = Math.floor(Math.random()*(i+1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled.slice(0,10);
-    }
-
-    // بدء اختبار جديد
-    function initNewGame() {
-        if(timerInterval) clearInterval(timerInterval);
-        currentQuestions = selectRandomQuestions();
-        currentIndex = 0;
-        userAnswers.fill(null);
-        score = 0;
-        answerLock = false;
-        gameActive = true;
-        totalTimeSeconds = 0;
-        timerDisplaySpan.innerText = "0";
-        startTime = Date.now();
-        timerInterval = setInterval(() => {
-            if(gameActive) {
-                totalTimeSeconds = Math.floor((Date.now() - startTime) / 1000);
-                timerDisplaySpan.innerText = totalTimeSeconds;
-            }
-        }, 200);
-        scoreCountSpan.innerText = "0";
-        totalQSpan.innerText = "10";
-        qTotalSpan.innerText = "10";
-        gameMessageDiv.innerHTML = "✨ اختر الإجابة الصحيحة لكل سؤال ✨";
-        nextBtn.style.display = "none";
-        renderCurrentQuestion();
-    }
-
-    // عرض السؤال الحالي
-    function renderCurrentQuestion() {
-        if(!gameActive) return;
-        const q = currentQuestions[currentIndex];
-        if(!q) return;
-        questionTextDiv.innerHTML = q.text;
-        // إنشاء أزرار الخيارات
-        optionsContainer.innerHTML = '';
-        q.options.forEach((opt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.textContent = opt;
-            btn.setAttribute('data-opt-index', idx);
-            btn.addEventListener('click', () => onAnswerSelected(idx));
-            if(answerLock) btn.disabled = true;
-            optionsContainer.appendChild(btn);
-        });
-        qCurrentSpan.innerText = currentIndex+1;
-        scoreCountSpan.innerText = score;
-        // إذا كان السؤال قد أجيب عليه سابقاً (في حالة إعادة عرض)
-        if(userAnswers[currentIndex] !== null) {
-            answerLock = true;
-            const selectedIdx = userAnswers[currentIndex];
-            highlightCorrectAndWrong(selectedIdx, q.correct);
-            nextBtn.style.display = "block";
-        } else {
-            answerLock = false;
-            nextBtn.style.display = "none";
-        }
-    }
-
-    // عند اختيار إجابة
-    function onAnswerSelected(selectedIdx) {
-        if(!gameActive) return;
-        if(answerLock) {
-            gameMessageDiv.innerHTML = "⚠️ لقد أجبت بالفعل على هذا السؤال، انتقل إلى التالي ⚠️";
-            return;
-        }
-        const q = currentQuestions[currentIndex];
-        const isCorrect = (selectedIdx === q.correct);
-        if(isCorrect) {
-            score++;
-            scoreCountSpan.innerText = score;
-            gameMessageDiv.innerHTML = "✅ إجابة صحيحة! ✅";
-        } else {
-            gameMessageDiv.innerHTML = `❌ خطأ! الإجابة الصحيحة هي: ${q.options[q.correct]} ❌`;
-        }
-        // تسجيل الإجابة
-        userAnswers[currentIndex] = selectedIdx;
-        answerLock = true;
-        // تعطيل الأزرار وإظهار التصحيح
-        const allOptBtns = document.querySelectorAll('.option-btn');
-        allOptBtns.forEach(btn => btn.disabled = true);
-        highlightCorrectAndWrong(selectedIdx, q.correct);
-        // إظهار زر التالي
-        nextBtn.style.display = "block";
-        // التحقق مما إذا كان هذا آخر سؤال
-        if(currentIndex + 1 === currentQuestions.length) {
-            nextBtn.textContent = "🏁 إنهاء الاختبار 🏁";
-        } else {
-            nextBtn.textContent = "➡️ السؤال التالي";
-        }
-    }
-
-    function highlightCorrectAndWrong(selectedIdx, correctIdx) {
-        const btns = document.querySelectorAll('.option-btn');
-        btns.forEach((btn, idx) => {
-            btn.classList.remove('correct-highlight', 'wrong-highlight');
-            if(idx === correctIdx) {
-                btn.classList.add('correct-highlight');
-            } else if(idx === selectedIdx && idx !== correctIdx) {
-                btn.classList.add('wrong-highlight');
-            }
-        });
-    }
-
-    // الانتقال للسؤال التالي أو إنهاء الاختبار
-    function nextQuestion() {
-        if(!gameActive) return;
-        if(!answerLock) {
-            gameMessageDiv.innerHTML = "⚠️ يجب عليك الإجابة على السؤال أولاً ⚠️";
-            return;
-        }
-        if(currentIndex + 1 < currentQuestions.length) {
-            // انتقل للسؤال التالي
-            currentIndex++;
-            answerLock = false;
-            renderCurrentQuestion();
-        } else {
-            // نهاية الاختبار
-            endQuiz();
-        }
-    }
-
-    function endQuiz() {
-        if(timerInterval) clearInterval(timerInterval);
-        gameActive = false;
-        const finalScore = score;
-        const totalQuestions = currentQuestions.length;
-        const finalTime = totalTimeSeconds;
-        // تسجيل النتيجة في الـ Leaderboard إذا كانت تستحق
-        let playerName = playerNameInput.value.trim();
-        if(playerName === "") playerName = "بطل رياضي";
-        addScoreToLeaderboard(playerName, finalScore, totalQuestions, finalTime);
-        gameMessageDiv.innerHTML = `🎉 انتهى الاختبار! نتيجتك: ${finalScore}/${totalQuestions} في زمن ${finalTime} ثانية. 🎉`;
-        // عرض رسالة بالصفحة وإظهار زر إعادة
-        nextBtn.style.display = "none";
-        // تعطيل خيارات الأسئلة
-        const allBtns = document.querySelectorAll('.option-btn');
-        allBtns.forEach(btn => btn.disabled = true);
-        // زر إعادة اللعبة موجود بالفعل
-    }
-
-    function addScoreToLeaderboard(name, scoreValue, total, timeSec) {
-        leaderboard.push({ name: name, score: scoreValue, total: total, time: timeSec });
-        leaderboard.sort((a,b) => {
-            if(a.score !== b.score) return b.score - a.score;
-            return a.time - b.time;
-        });
-        if(leaderboard.length > 5) leaderboard = leaderboard.slice(0,5);
-        saveLeaderboard();
-        renderLeaderboard();
-    }
-
-    // إعادة ضبط اللعبة (بداية جديدة)
-    function resetAndPlay() {
-        if(timerInterval) clearInterval(timerInterval);
-        initNewGame();
-    }
-
-    // مسح قائمة الأبطال
-    function clearLeaderboardData() {
-        leaderboard = [];
-        saveLeaderboard();
-        renderLeaderboard();
-        gameMessageDiv.innerHTML = "🗑️ تم مسح قائمة الأبطال بنجاح";
-        setTimeout(() => { if(gameActive) gameMessageDiv.innerHTML = "✨ اختر الإجابة الصحيحة ✨"; }, 1500);
-    }
-
-    // التنقل بين الصفحات
-    function showPage(pageId) {
-        const pages = [menuPage, gamePage, scoresPage, helpPage];
-        pages.forEach(p => p.classList.remove('active-page'));
-        if(pageId === 'menu') menuPage.classList.add('active-page');
-        else if(pageId === 'game') gamePage.classList.add('active-page');
-        else if(pageId === 'scores') scoresPage.classList.add('active-page');
-        else if(pageId === 'help') helpPage.classList.add('active-page');
-        navBtns.forEach(btn => {
-            btn.classList.remove('active');
-            if(btn.getAttribute('data-page') === pageId) btn.classList.add('active');
-        });
-        if(pageId === 'scores') renderLeaderboard();
-        if(pageId === 'game' && !gameActive) {
-            // إذا كانت اللعبة غير نشطة (لم تبدأ أو انتهت) نعرض رسالة تشجع على البدء
-            if(!gameActive && document.getElementById('questionText').innerText === '...') {
-                gameMessageDiv.innerHTML = "🚀 اضغط 'ابدأ الاختبار' من القائمة أو 'إعادة الاختبار' للبدء";
+        // تحميل أفضل نتيجة من التخزين المحلي
+        function loadHighScore() {
+            const saved = localStorage.getItem('snakeHighScore');
+            if(saved && !isNaN(parseInt(saved))) {
+                highScore = parseInt(saved);
+                highScoreSpan.innerText = highScore;
+            } else {
+                highScore = 0;
+                highScoreSpan.innerText = '0';
             }
         }
-    }
 
-    // ربط الأحداث
-    startGameBtn.addEventListener('click', () => {
-        resetAndPlay();
-        showPage('game');
-    });
-    restartGameBtn.addEventListener('click', () => {
-        resetAndPlay();
-        if(!gamePage.classList.contains('active-page')) showPage('game');
-        else renderCurrentQuestion();
-    });
-    nextBtn.addEventListener('click', nextQuestion);
-    clearLeaderboardBtn.addEventListener('click', clearLeaderboardData);
-    navBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const page = btn.getAttribute('data-page');
-            showPage(page);
+        function saveHighScore() {
+            if(score > highScore) {
+                highScore = score;
+                highScoreSpan.innerText = highScore;
+                localStorage.setItem('snakeHighScore', highScore);
+            }
+        }
+
+        // تحديث عرض النتيجة
+        function updateScoreUI() {
+            scoreSpan.innerText = score;
+            if(score > highScore) {
+                highScoreSpan.innerText = score;
+            }
+        }
+
+        // إنشاء ثعبان جديد في البداية
+        function initSnake() {
+            snake = [
+                { x: 10, y: 10 },
+                { x: 9, y: 10 },
+                { x: 8, y: 10 },
+                { x: 7, y: 10 }
+            ];
+            direction = 'RIGHT';
+            nextDirection = 'RIGHT';
+        }
+
+        // توليد طعام جديد في مكان عشوائي غير متداخل مع الثعبان
+        function generateRandomFood() {
+            const totalCells = GRID_SIZE * GRID_SIZE;
+            if(snake.length >= totalCells) {
+                // فوز كامل! إنهاء اللعبة بطريقة خاصة
+                gameOver(true);
+                return false;
+            }
+            // خوارزمية سريعة: تجربة عشوائية حتى نجد مكان فارغ (في الغالب سريع)
+            let freeCells = [];
+            // إذا كان الثعبان كبيراً جداً نستخدم البحث الشامل, لكن نستخدم حلاً عملياً
+            if(snake.length > totalCells * 0.8) {
+                // بحث شامل للفارغات
+                for(let i=0; i<GRID_SIZE; i++) {
+                    for(let j=0; j<GRID_SIZE; j++) {
+                        if(!snake.some(segment => segment.x === i && segment.y === j)) {
+                            freeCells.push({x: i, y: j});
+                        }
+                    }
+                }
+                if(freeCells.length === 0) {
+                    gameOver(true);
+                    return false;
+                }
+                const rand = Math.floor(Math.random() * freeCells.length);
+                food = freeCells[rand];
+                return true;
+            } else {
+                // بحث عشوائي محدود
+                let maxAttempts = 2000;
+                while(maxAttempts-- > 0) {
+                    const randX = Math.floor(Math.random() * GRID_SIZE);
+                    const randY = Math.floor(Math.random() * GRID_SIZE);
+                    if(!snake.some(segment => segment.x === randX && segment.y === randY)) {
+                        food = { x: randX, y: randY };
+                        return true;
+                    }
+                }
+                // لو فشلت المحاولات العشوائية, نستخدم البحث الشامل
+                for(let i=0; i<GRID_SIZE; i++) {
+                    for(let j=0; j<GRID_SIZE; j++) {
+                        if(!snake.some(seg => seg.x === i && seg.y === j)) {
+                            food = { x: i, y: j };
+                            return true;
+                        }
+                    }
+                }
+                gameOver(true);
+                return false;
+            }
+        }
+
+        // ضبط سرعة اللعبة بناءً على النقاط (كل 5 نقاط تزيد السرعة بنسبة)
+        function updateSpeedBasedOnScore() {
+            let newSpeed = baseSpeedMs - Math.floor(score / 5) * 6;
+            if(newSpeed < 70) newSpeed = 70;
+            if(newSpeed !== currentSpeedMs) {
+                currentSpeedMs = newSpeed;
+                // إعادة تعيين المؤقت بالسرعة الجديدة إذا كانت اللعبة نشطة وغير متوقفة
+                if(gameLoopInterval && isGameRunning && !isPaused) {
+                    clearInterval(gameLoopInterval);
+                    gameLoopInterval = setInterval(gameTick, currentSpeedMs);
+                }
+            }
+        }
+
+        // حركة الثعبان (تحديث حالة اللعبة)
+        function moveSnake() {
+            // تطبيق الاتجاه الجديد
+            direction = nextDirection;
+
+            // حساب الرأس الجديد
+            let newHead = { ...snake[0] };
+            switch(direction) {
+                case 'RIGHT': newHead.x += 1; break;
+                case 'LEFT':  newHead.x -= 1; break;
+                case 'UP':    newHead.y -= 1; break;
+                case 'DOWN':  newHead.y += 1; break;
+                default: break;
+            }
+
+            // التحقق من أكل الطعام
+            const willEat = (newHead.x === food.x && newHead.y === food.y);
+
+            // إضافة الرأس الجديد
+            snake.unshift(newHead);
+            if(!willEat) {
+                snake.pop();
+            } else {
+                // زيادة النقاط
+                score++;
+                updateScoreUI();
+                saveHighScore();
+                updateSpeedBasedOnScore();
+                // توليد طعام جديد
+                const success = generateRandomFood();
+                if(!success) return; // game over handled inside
+            }
+
+            // التحقق من التصادم (الجدران أو الذات)
+            // الحدود
+            if(newHead.x < 0 || newHead.x >= GRID_SIZE || newHead.y < 0 || newHead.y >= GRID_SIZE) {
+                gameOver(false);
+                return;
+            }
+            // التصادم مع الذات: نتحقق إذا كان الرأس موجود في باقي الجسم (باستثناء أول عنصر بعد الإضافة)
+            for(let i = 1; i < snake.length; i++) {
+                if(snake[i].x === newHead.x && snake[i].y === newHead.y) {
+                    gameOver(false);
+                    return;
+                }
+            }
+        }
+
+        // إنهاء اللعبة (مع عرض رسالة)
+        function gameOver(fullWin = false) {
+            if(!isGameRunning) return;
+            isGameRunning = false;
+            if(gameLoopInterval) {
+                clearInterval(gameLoopInterval);
+                gameLoopInterval = null;
+            }
+            if(fullWin && snake.length === GRID_SIZE * GRID_SIZE) {
+                statusDiv.innerHTML = "🏆 إنجاز أسطوري! ملأت اللوحة بالكامل! اضغط إعادة التشغيل 🏆";
+            } else {
+                statusDiv.innerHTML = "💀 انتهت اللعبة! اضغط 'إعادة التشغيل' لبداية جديدة 💀";
+            }
+            draw(); // رسم نهائي مع رسالة
+        }
+
+        // إعادة ضبط كامل اللعبة
+        function restartGame() {
+            // إيقاف أي مؤقت قديم
+            if(gameLoopInterval) {
+                clearInterval(gameLoopInterval);
+                gameLoopInterval = null;
+            }
+            // إعادة تعيين المتغيرات
+            initSnake();
+            score = 0;
+            isGameRunning = true;
+            isPaused = false;
+            pauseBtn.innerText = "⏸️ إيقاف";
+            currentSpeedMs = baseSpeedMs;
+            updateScoreUI();
+            saveHighScore();   // يحافظ على أعلى نتيجة سابقة ولا يخسرها
+            // توليد طعام آمن
+            // إزالة أي طعام متداخل
+            food = { x: 5, y: 5 };
+            // نتأكد أن الطعام ليس في الثعبان
+            while(snake.some(seg => seg.x === food.x && seg.y === food.y)) {
+                food = { x: Math.floor(Math.random() * GRID_SIZE), y: Math.floor(Math.random() * GRID_SIZE) };
+            }
+            // تأكيد صحة الطعام
+            if(!snake.some(seg => seg.x === food.x && seg.y === food.y)) {
+                // جيد
+            } else {
+                generateRandomFood();
+            }
+            direction = 'RIGHT';
+            nextDirection = 'RIGHT';
+            statusDiv.innerHTML = "▶ اللعبة مستمرة | استخدم الأسهم أو الأزرار";
+            // بدء المؤقت
+            gameLoopInterval = setInterval(gameTick, currentSpeedMs);
+            draw();
+        }
+
+        // دورة اللعبة (تحديث المنطق وإعادة الرسم)
+        function gameTick() {
+            if(!isGameRunning || isPaused) return;
+            moveSnake();      // تحتوي داخلياً على gameOver إذا حصل تصادم
+            draw();           // إعادة رسم اللوحة بعد الحركة
+            if(!isGameRunning) {
+                // إذا انتهت اللعبة نوقف التحديثات
+                if(gameLoopInterval) clearInterval(gameLoopInterval);
+                gameLoopInterval = null;
+            }
+        }
+
+        // ------------------- رسم اللوحة (سلس وحديث) -------------------
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // رسم شبكة خفيفة
+            ctx.strokeStyle = '#2e6b5c';
+            ctx.lineWidth = 0.8;
+            for(let i = 0; i <= GRID_SIZE; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * CELL_SIZE, 0);
+                ctx.lineTo(i * CELL_SIZE, canvas.height);
+                ctx.stroke();
+                ctx.moveTo(0, i * CELL_SIZE);
+                ctx.lineTo(canvas.width, i * CELL_SIZE);
+                ctx.stroke();
+            }
+
+            // رسم الطعام (تأثير متوهج)
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = "transparent";
+            const grad = ctx.createRadialGradient(food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, 5, food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, 15);
+            grad.addColorStop(0, '#ff5e3a');
+            grad.addColorStop(1, '#d93c1a');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, CELL_SIZE/2 - 2, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = '#fff3b0';
+            ctx.beginPath();
+            ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2 - 2, food.y * CELL_SIZE + CELL_SIZE/2 - 2, 3, 0, Math.PI*2);
+            ctx.fill();
+
+            // رسم الثعبان (جسم انسيابي)
+            for(let i = 0; i < snake.length; i++) {
+                const seg = snake[i];
+                const x = seg.x * CELL_SIZE;
+                const y = seg.y * CELL_SIZE;
+                const isHead = (i === 0);
+                const radius = CELL_SIZE * 0.35;
+                // تدرج حسب الجزء
+                let fillColor;
+                if(isHead) {
+                    fillColor = '#f7c56e';
+                } else {
+                    const intensity = 0.4 + (i / snake.length) * 0.4;
+                    fillColor = `rgb(70, 180, 120)`;
+                }
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = "rgba(0,0,0,0.3)";
+                ctx.fillStyle = isHead ? '#ffcf70' : '#46b47a';
+                ctx.beginPath();
+                ctx.roundRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4, 8);
+                ctx.fill();
+                // عيون الثعبان للرأس
+                if(isHead) {
+                    ctx.fillStyle = "#ffffff";
+                    ctx.beginPath();
+                    ctx.arc(x + CELL_SIZE - 8, y + 8, 3, 0, Math.PI*2);
+                    ctx.arc(x + 8, y + 8, 3, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.fillStyle = "#0a2b22";
+                    ctx.beginPath();
+                    ctx.arc(x + CELL_SIZE - 7, y + 7, 1.5, 0, Math.PI*2);
+                    ctx.arc(x + 9, y + 7, 1.5, 0, Math.PI*2);
+                    ctx.fill();
+                }
+            }
+            ctx.shadowBlur = 0;
+
+            // إذا كانت اللعبة متوقفة (paused) نضيف طبقة
+            if(isPaused && isGameRunning) {
+                ctx.globalAlpha = 0.7;
+                ctx.fillStyle = '#0a1f1a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.globalAlpha = 1;
+                ctx.font = "bold 24px 'Segoe UI'";
+                ctx.fillStyle = "#f7e05e";
+                ctx.shadowBlur = 0;
+                ctx.fillText("⏸ متوقف", canvas.width/2-70, canvas.height/2);
+            } else if(!isGameRunning) {
+                ctx.globalAlpha = 0.75;
+                ctx.fillStyle = '#000000aa';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.globalAlpha = 1;
+                ctx.font = "bold 22px 'Segoe UI'";
+                ctx.fillStyle = "#ffbe76";
+                ctx.fillText("GAME OVER", canvas.width/2-70, canvas.height/2);
+                ctx.font = "14px monospace";
+                ctx.fillStyle = "#aaddcc";
+                ctx.fillText("اضغط إعادة التشغيل", canvas.width/2-85, canvas.height/2+40);
+            }
+        }
+
+        // مساعد لرسم مستدير الزوايا
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.moveTo(x+r, y);
+                this.lineTo(x+w-r, y);
+                this.quadraticCurveTo(x+w, y, x+w, y+r);
+                this.lineTo(x+w, y+h-r);
+                this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+                this.lineTo(x+r, y+h);
+                this.quadraticCurveTo(x, y+h, x, y+h-r);
+                this.lineTo(x, y+r);
+                this.quadraticCurveTo(x, y, x+r, y);
+                return this;
+            };
+        }
+
+        // تغيير الاتجاه مع منع الانعكاس المباشر
+        function changeDirection(newDir) {
+            if(!isGameRunning || isPaused) return;
+            const opposite = {
+                'UP': 'DOWN',
+                'DOWN': 'UP',
+                'LEFT': 'RIGHT',
+                'RIGHT': 'LEFT'
+            };
+            if(opposite[newDir] !== direction) {
+                nextDirection = newDir;
+            }
+        }
+
+        // أحداث لوحة المفاتيح
+        function handleKeydown(e) {
+            const key = e.key;
+            e.preventDefault();
+            if(key === 'ArrowUp') changeDirection('UP');
+            else if(key === 'ArrowDown') changeDirection('DOWN');
+            else if(key === 'ArrowLeft') changeDirection('LEFT');
+            else if(key === 'ArrowRight') changeDirection('RIGHT');
+            else if(key === ' ' || key === 'Space') {
+                e.preventDefault();
+                togglePause();
+            }
+        }
+
+        // تبديل الإيقاف المؤقت
+        function togglePause() {
+            if(!isGameRunning) return;
+            isPaused = !isPaused;
+            if(isPaused) {
+                if(gameLoopInterval) clearInterval(gameLoopInterval);
+                gameLoopInterval = null;
+                pauseBtn.innerText = "▶ استئناف";
+                statusDiv.innerHTML = "⏸ اللعبة متوقفة مؤقتاً | اضغط استئناف";
+            } else {
+                if(gameLoopInterval) clearInterval(gameLoopInterval);
+                gameLoopInterval = setInterval(gameTick, currentSpeedMs);
+                pauseBtn.innerText = "⏸️ إيقاف";
+                statusDiv.innerHTML = "▶ اللعبة مستمرة | استخدم الأسهم";
+                draw();
+                // نرسم فوراً لإزالة طبقة التوقف
+            }
+            draw();
+        }
+
+        // إعداد الأزرار الاتجاهية
+        function setupDirectionButtons() {
+            const dirBtns = document.querySelectorAll('.dir-btn');
+            dirBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const dir = btn.getAttribute('data-dir');
+                    if(dir === 'UP') changeDirection('UP');
+                    else if(dir === 'DOWN') changeDirection('DOWN');
+                    else if(dir === 'LEFT') changeDirection('LEFT');
+                    else if(dir === 'RIGHT') changeDirection('RIGHT');
+                });
+            });
+        }
+
+        // منع التمرير بالأسهم على الصفحة
+        window.addEventListener('keydown', function(e) {
+            if(e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space') {
+                e.preventDefault();
+            }
         });
-    });
 
-    // تهيئة أولية
-    loadLeaderboard();
-    // عرض واجهة القائمة افتراضياً
-    showPage('menu');
-    // تحضير البيانات ولكن دون بدء الاختبار
-    gameActive = false;
-    questionTextDiv.innerHTML = "📚 اضغط 'ابدأ الاختبار' لمواجهة أسئلة البكالوريا";
-    optionsContainer.innerHTML = '<div style="text-align:center; color:#ffefcf;">🔘 ستظهر الخيارات بعد البدء</div>';
-    nextBtn.style.display = "none";
-    qTotalSpan.innerText = "10";
-    totalQSpan.innerText = "10";
-    scoreCountSpan.innerText = "0";
-    timerDisplaySpan.innerText = "0";
+        // تهيئة اللعبة وتشغيلها
+        function initGame() {
+            loadHighScore();
+            initSnake();
+            score = 0;
+            updateScoreUI();
+            isGameRunning = true;
+            isPaused = false;
+            currentSpeedMs = baseSpeedMs;
+            // توليد طعام مناسب
+            generateRandomFood();
+            direction = 'RIGHT';
+            nextDirection = 'RIGHT';
+            if(gameLoopInterval) clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(gameTick, currentSpeedMs);
+            draw();
+            // ربط الأحداث
+            document.addEventListener('keydown', handleKeydown);
+            restartBtn.addEventListener('click', () => { restartGame(); });
+            pauseBtn.addEventListener('click', togglePause);
+            setupDirectionButtons();
+        }
+
+        initGame();
+    })();
 </script>
 </body>
 </html>
