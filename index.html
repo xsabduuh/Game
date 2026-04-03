@@ -1,645 +1,1157 @@
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>🐍 الثعبان الذهبي | Snake Game</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ساكورا سوشي | فن السوشي الياباني</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Cairo:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: hsl(222,55%,7%);
+  --bg2: hsl(222,50%,9%);
+  --bg3: hsl(222,45%,12%);
+  --primary: hsl(10,85%,62%);
+  --primary-dim: rgba(235,90,65,0.12);
+  --border: hsl(222,30%,18%);
+  --fg: hsl(40,30%,93%);
+  --muted: hsl(40,15%,60%);
+  --card: hsl(222,48%,10%);
+  --green: hsl(120,40%,55%);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-        body {
-            background: linear-gradient(145deg, #0a1f1a 0%, #0c2b24 100%);
-            font-family: 'Segoe UI', 'Tajawal', 'Poppins', monospace;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(–bg2); }
+::-webkit-scrollbar-thumb { background: var(–border); border-radius:3px; }
 
-        .game-wrapper {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(4px);
-            border-radius: 2rem;
-            padding: 1.2rem;
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.1);
-        }
+/* NAVBAR */
+nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+z-index: 1000;
+padding: 20px 24px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+transition: all 0.3s;
+}
+nav.scrolled {
+background: rgba(8,12,25,0.96);
+backdrop-filter: blur(16px);
+padding: 14px 24px;
+border-bottom: 1px solid var(–border);
+}
+.logo {
+display: flex;
+align-items: center;
+gap: 10px;
+cursor: pointer;
+text-decoration: none;
+}
+.logo-icon {
+width: 38px; height: 38px;
+background: var(–primary);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-family: ‘Playfair Display’, serif;
+font-size: 18px;
+color: white;
+font-weight: 700;
+flex-shrink: 0;
+}
+.logo-text {
+font-family: ‘Cairo’, sans-serif;
+font-weight: 700;
+font-size: 17px;
+letter-spacing: 2px;
+color: var(–fg);
+}
+.nav-actions {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+.cart-btn {
+position: relative;
+background: var(–bg3);
+border: 1px solid var(–border);
+border-radius: 50%;
+width: 44px; height: 44px;
+display: flex; align-items: center; justify-content: center;
+cursor: pointer;
+color: var(–fg);
+transition: all 0.2s;
+}
+.cart-btn:hover { border-color: var(–primary); }
+.cart-count {
+position: absolute;
+top: -6px; left: -6px;
+background: var(–primary);
+color: white;
+border-radius: 50%;
+width: 20px; height: 20px;
+font-size: 10px;
+font-weight: 700;
+display: flex; align-items: center; justify-content: center;
+display: none;
+}
+.menu-btn {
+background: none;
+border: none;
+cursor: pointer;
+color: var(–fg);
+display: flex; flex-direction: column; gap: 5px;
+padding: 4px;
+}
+.menu-btn span {
+display: block;
+width: 24px; height: 2px;
+background: var(–fg);
+border-radius: 2px;
+transition: all 0.3s;
+}
 
-        .game-panel {
-            background: #0d2c24;
-            border-radius: 1.8rem;
-            padding: 1rem;
-            box-shadow: inset 0 0 8px #2f7a5e, 0 10px 20px rgba(0,0,0,0.3);
-        }
+/* MOBILE MENU */
+.mobile-menu {
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: var(–bg);
+z-index: 999;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 32px;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s;
+}
+.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu a {
+font-family: ‘Playfair Display’, serif;
+font-size: 36px;
+color: var(–fg);
+text-decoration: none;
+transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(–primary); }
+.close-btn {
+position: absolute;
+top: 24px; left: 24px;
+background: none; border: none;
+color: var(–fg); cursor: pointer;
+font-size: 28px;
+}
 
-        canvas {
-            display: block;
-            margin: 0 auto;
-            border-radius: 1.2rem;
-            box-shadow: 0 0 0 3px #ffd966, 0 10px 25px rgba(0,0,0,0.3);
-            cursor: pointer;
-            background-color: #1a3a32;
-        }
+/* PAGES */
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; }
 
-        .info-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: #071f1bcc;
-            border-radius: 80px;
-            color: #f7ecc7;
-            font-weight: bold;
-        }
+/* ===== HOME PAGE ===== */
+.hero {
+position: relative;
+min-height: 90vh;
+display: flex;
+align-items: center;
+overflow: hidden;
+border-bottom: 1px solid var(–border);
+}
+.hero-img {
+position: absolute;
+inset: 0;
+background: url(‘https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=1800&q=90’) center/cover;
+}
+.hero-img::after {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(to left, var(–bg) 35%, rgba(5,8,20,0.65) 100%),
+linear-gradient(to top, var(–bg) 0%, transparent 55%);
+}
+.hero-content {
+position: relative;
+z-index: 2;
+padding: 100px 24px 60px;
+max-width: 600px;
+}
+.badge {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+padding: 6px 14px;
+border-radius: 999px;
+background: var(–primary-dim);
+border: 1px solid rgba(235,90,65,0.3);
+color: var(–primary);
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 2px;
+text-transform: uppercase;
+margin-bottom: 24px;
+}
+.badge-dot {
+width: 7px; height: 7px;
+border-radius: 50%;
+background: var(–primary);
+animation: pulse 2s infinite;
+}
+@keyframes pulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.5; transform: scale(0.8); }
+}
+.hero h1 {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(3rem, 10vw, 5.5rem);
+line-height: 1.1;
+margin-bottom: 20px;
+color: var(–fg);
+}
+.hero h1 em {
+color: var(–primary);
+font-style: italic;
+}
+.hero p {
+font-size: 17px;
+line-height: 1.8;
+color: var(–muted);
+margin-bottom: 36px;
+max-width: 480px;
+}
+.btn-primary {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+padding: 16px 32px;
+background: var(–primary);
+color: white;
+font-family: ‘Cairo’, sans-serif;
+font-weight: 700;
+font-size: 14px;
+letter-spacing: 2px;
+text-transform: uppercase;
+border: none;
+cursor: pointer;
+transition: opacity 0.2s, transform 0.2s;
+text-decoration: none;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-outline {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+padding: 14px 28px;
+background: transparent;
+color: var(–primary);
+font-family: ‘Cairo’, sans-serif;
+font-weight: 700;
+font-size: 13px;
+letter-spacing: 2px;
+text-transform: uppercase;
+border: 1px solid var(–primary);
+cursor: pointer;
+transition: all 0.2s;
+text-decoration: none;
+}
+.btn-outline:hover { background: var(–primary); color: white; }
 
-        .score-box, .high-box {
-            background: #00000066;
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-        }
-        .score-box span, .high-box span {
-            color: #ffcf4a;
-            font-size: 1.5rem;
-            margin-left: 8px;
-        }
+/* CATEGORIES */
+.section { padding: 60px 24px; }
+.section-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 28px;
+}
+.section-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 26px;
+font-weight: 700;
+}
+.section-link {
+color: var(–primary);
+font-size: 13px;
+font-weight: 600;
+text-decoration: none;
+display: flex; align-items: center; gap: 4px;
+cursor: pointer;
+}
+.cats-scroll {
+display: flex;
+gap: 12px;
+overflow-x: auto;
+padding-bottom: 8px;
+scrollbar-width: none;
+}
+.cats-scroll::-webkit-scrollbar { display: none; }
+.cat-chip {
+flex-shrink: 0;
+padding: 10px 20px;
+border: 1px solid var(–border);
+border-radius: 8px;
+background: var(–bg3);
+color: var(–fg);
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+white-space: nowrap;
+}
+.cat-chip:hover, .cat-chip.active {
+border-color: rgba(235,90,65,0.4);
+background: var(–primary-dim);
+color: var(–primary);
+}
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
+/* PRODUCTS GRID */
+.products-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 14px;
+}
+@media(min-width:600px) {
+.products-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.product-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 12px;
+overflow: hidden;
+cursor: pointer;
+transition: transform 0.2s, border-color 0.2s;
+animation: fadeUp 0.5s ease both;
+}
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(16px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.product-card:hover {
+transform: translateY(-3px);
+border-color: rgba(235,90,65,0.25);
+}
+.product-img-wrap {
+position: relative;
+aspect-ratio: 4/3;
+overflow: hidden;
+}
+.product-img-wrap img {
+width: 100%; height: 100%;
+object-fit: cover;
+transition: transform 0.4s;
+}
+.product-card:hover .product-img-wrap img { transform: scale(1.06); }
+.product-badge {
+position: absolute;
+top: 8px; right: 8px;
+background: var(–primary);
+color: white;
+font-size: 9px;
+font-weight: 700;
+padding: 3px 8px;
+border-radius: 4px;
+letter-spacing: 1px;
+text-transform: uppercase;
+}
+.product-badge.new { background: hsl(200,80%,45%); }
+.product-badge.veg { background: var(–green); }
+.product-add {
+position: absolute;
+bottom: 8px; left: 8px;
+width: 32px; height: 32px;
+border-radius: 50%;
+background: var(–primary);
+border: none;
+color: white;
+font-size: 18px;
+cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+transition: transform 0.2s;
+}
+.product-add:hover { transform: scale(1.1); }
+.product-info {
+padding: 12px;
+}
+.product-name {
+font-weight: 700;
+font-size: 14px;
+margin-bottom: 2px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.product-cat {
+font-size: 10px;
+font-weight: 700;
+color: var(–primary);
+letter-spacing: 1px;
+text-transform: uppercase;
+margin-bottom: 6px;
+}
+.product-desc {
+font-size: 11px;
+color: var(–muted);
+line-height: 1.5;
+display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
+overflow: hidden;
+margin-bottom: 8px;
+}
+.product-footer {
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+.product-price {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 15px;
+font-weight: 700;
+color: var(–primary);
+}
+.product-meta {
+font-size: 10px;
+color: var(–muted);
+}
 
-        button {
-            background: #2f6b5c;
-            border: none;
-            font-family: inherit;
-            font-weight: bold;
-            padding: 8px 20px;
-            border-radius: 60px;
-            font-size: 1rem;
-            color: #faf0cf;
-            cursor: pointer;
-            transition: 0.1s linear;
-            box-shadow: 0 4px 0 #15423a;
-        }
-        button:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #15423a;
-        }
+/* ===== PRODUCT DETAIL PAGE ===== */
+.detail-back {
+display: flex;
+align-items: center;
+gap: 8px;
+color: var(–muted);
+font-size: 14px;
+cursor: pointer;
+padding: 80px 24px 20px;
+transition: color 0.2s;
+background: none;
+border: none;
+font-family: ‘Cairo’, sans-serif;
+width: 100%;
+text-align: right;
+}
+.detail-back:hover { color: var(–fg); }
+.detail-img {
+width: 100%;
+aspect-ratio: 16/9;
+object-fit: cover;
+position: relative;
+}
+.detail-img-wrap { position: relative; }
+.detail-badges {
+position: absolute;
+top: 12px; right: 12px;
+display: flex; flex-direction: column; gap: 6px;
+}
+.detail-body { padding: 24px; }
+.detail-cat {
+font-size: 11px;
+font-weight: 700;
+color: var(–primary);
+letter-spacing: 2px;
+text-transform: uppercase;
+margin-bottom: 8px;
+display: flex; align-items: center; gap: 8px;
+}
+.detail-name {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(2rem, 8vw, 3rem);
+margin-bottom: 12px;
+}
+.detail-price-row {
+display: flex; align-items: baseline; gap: 12px;
+margin-bottom: 20px;
+}
+.detail-price {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 2rem;
+font-weight: 700;
+color: var(–primary);
+}
+.detail-old-price {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 1.1rem;
+color: var(–muted);
+text-decoration: line-through;
+}
+.detail-desc {
+color: var(–muted);
+line-height: 1.8;
+margin-bottom: 24px;
+font-size: 15px;
+}
+.detail-specs {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 16px;
+padding: 20px 0;
+border-top: 1px solid var(–border);
+border-bottom: 1px solid var(–border);
+margin-bottom: 24px;
+}
+.spec-label { font-size: 12px; color: var(–muted); margin-bottom: 4px; }
+.spec-value { font-weight: 600; font-size: 15px; }
+.ingredients-wrap { grid-column: 1/-1; }
+.ingredients {
+display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+}
+.ing-tag {
+background: var(–bg3);
+border: 1px solid var(–border);
+border-radius: 999px;
+padding: 4px 12px;
+font-size: 12px;
+color: var(–fg);
+}
+.detail-notes label {
+display: block;
+font-size: 13px;
+font-weight: 600;
+margin-bottom: 8px;
+}
+.detail-notes textarea {
+width: 100%;
+background: var(–bg3);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 12px;
+color: var(–fg);
+font-family: ‘Cairo’, sans-serif;
+font-size: 14px;
+resize: none;
+outline: none;
+transition: border-color 0.2s;
+}
+.detail-notes textarea:focus { border-color: rgba(235,90,65,0.4); }
+.qty-row {
+display: flex; gap: 12px; margin-top: 16px; align-items: center;
+}
+.qty-ctrl {
+display: flex;
+align-items: center;
+border: 1px solid var(–border);
+background: var(–bg3);
+border-radius: 8px;
+overflow: hidden;
+}
+.qty-btn {
+background: none; border: none;
+color: var(–muted);
+width: 44px; height: 52px;
+cursor: pointer; font-size: 20px;
+transition: color 0.2s;
+}
+.qty-btn:hover { color: var(–fg); }
+.qty-num {
+width: 48px; text-align: center;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 18px; font-weight: 700;
+}
+.add-btn {
+flex: 1;
+height: 52px;
+background: var(–primary);
+border: none;
+color: white;
+font-family: ‘Cairo’, sans-serif;
+font-weight: 700;
+font-size: 14px;
+letter-spacing: 1px;
+cursor: pointer;
+border-radius: 8px;
+transition: opacity 0.2s;
+display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.add-btn:hover { opacity: 0.88; }
+.add-btn.added { background: hsl(120,35%,35%); }
 
-        .direction-pad {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .dir-row {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .dir-btn {
-            background: #2e5a4e;
-            font-size: 1.8rem;
-            padding: 10px 25px;
-            box-shadow: 0 5px 0 #1a3e35;
-            border-radius: 50px;
-            min-width: 80px;
-        }
-        .dir-btn:active {
-            transform: translateY(3px);
-        }
+/* ===== CART PAGE ===== */
+.cart-body { padding: 80px 24px 24px; }
+.cart-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 2rem;
+margin-bottom: 4px;
+}
+.cart-subtitle { color: var(–muted); font-size: 14px; margin-bottom: 28px; }
+.cart-header-row {
+display: flex; align-items: center; justify-content: space-between;
+margin-bottom: 20px;
+}
+.clear-btn {
+background: none; border: none;
+color: var(–muted); font-family: ‘Cairo’, sans-serif;
+font-size: 13px; cursor: pointer;
+display: flex; align-items: center; gap: 4px;
+transition: color 0.2s;
+}
+.clear-btn:hover { color: var(–primary); }
+.cart-empty {
+text-align: center;
+padding: 80px 24px;
+}
+.cart-empty svg { opacity: 0.2; margin-bottom: 16px; }
+.cart-empty p { color: var(–muted); margin-bottom: 24px; }
+.cart-item {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 16px;
+margin-bottom: 12px;
+display: grid;
+grid-template-columns: 80px 1fr auto;
+gap: 14px;
+align-items: center;
+}
+.cart-item img {
+width: 80px; height: 80px;
+border-radius: 8px; object-fit: cover;
+}
+.cart-item-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.cart-item-price { color: var(–primary); font-family: ‘JetBrains Mono’, monospace; font-size: 14px; }
+.cart-item-each { color: var(–muted); font-size: 12px; }
+.cart-item-controls {
+display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.cart-qty-row {
+display: flex; align-items: center; gap: 8px;
+border: 1px solid var(–border);
+border-radius: 8px;
+overflow: hidden;
+background: var(–bg3);
+}
+.cqb {
+background: none; border: none;
+color: var(–muted); padding: 6px 10px;
+cursor: pointer; font-size: 16px; transition: color 0.2s;
+}
+.cqb:hover { color: var(–fg); }
+.cqn { font-family: ‘JetBrains Mono’, monospace; font-size: 14px; font-weight: 700; min-width: 24px; text-align: center; }
+.del-btn {
+background: none; border: none;
+color: var(–muted); cursor: pointer;
+font-size: 16px; transition: color 0.2s;
+}
+.del-btn:hover { color: var(–primary); }
+.order-summary {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 20px;
+margin-top: 24px;
+}
+.order-summary h3 {
+font-family: ‘Playfair Display’, serif;
+font-size: 20px;
+margin-bottom: 16px;
+}
+.summary-row {
+display: flex; justify-content: space-between;
+font-size: 14px; margin-bottom: 10px; color: var(–muted);
+}
+.summary-total {
+display: flex; justify-content: space-between;
+font-size: 17px; font-weight: 700;
+border-top: 1px solid var(–border);
+padding-top: 12px; margin-top: 8px;
+}
+.checkout-btn {
+width: 100%; margin-top: 16px;
+padding: 16px;
+background: var(–primary);
+border: none;
+color: white;
+font-family: ‘Cairo’, sans-serif;
+font-weight: 700;
+font-size: 15px;
+letter-spacing: 1px;
+cursor: pointer;
+border-radius: 8px;
+transition: opacity 0.2s;
+}
+.checkout-btn:hover { opacity: 0.88; }
 
-        .status {
-            text-align: center;
-            margin-top: 12px;
-            font-weight: bold;
-            color: #ffdd99;
-            background: #00000055;
-            padding: 6px;
-            border-radius: 60px;
-            font-size: 0.9rem;
-        }
+/* ===== SUCCESS PAGE ===== */
+.success-page {
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+min-height: 100vh;
+padding: 24px;
+text-align: center;
+}
+.success-icon {
+width: 80px; height: 80px;
+background: rgba(80,180,80,0.15);
+border: 2px solid var(–green);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-size: 36px;
+margin-bottom: 24px;
+animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn {
+from { opacity:0; transform: scale(0.5); }
+to { opacity:1; transform: scale(1); }
+}
+.success-page h2 {
+font-family: ‘Playfair Display’, serif;
+font-size: 2rem;
+margin-bottom: 12px;
+}
+.success-page p { color: var(–muted); margin-bottom: 32px; line-height: 1.7; }
 
-        @media (max-width: 650px) {
-            .dir-btn {
-                font-size: 1.3rem;
-                padding: 8px 18px;
-                min-width: 65px;
-            }
-            .score-box, .high-box {
-                font-size: 0.9rem;
-                padding: 4px 12px;
-            }
-            canvas {
-                width: 95%;
-                height: auto;
-            }
-        }
-        footer {
-            text-align: center;
-            font-size: 0.7rem;
-            margin-top: 15px;
-            color: #9bc0b5;
-        }
-    </style>
+/* FOOTER */
+footer {
+background: var(–bg2);
+border-top: 1px solid var(–border);
+padding: 40px 24px;
+text-align: center;
+}
+footer .logo { justify-content: center; margin-bottom: 16px; }
+footer p { color: var(–muted); font-size: 13px; }
+
+/* TOAST */
+.toast {
+position: fixed;
+bottom: 24px; left: 50%;
+transform: translateX(-50%) translateY(100px);
+background: var(–bg3);
+border: 1px solid var(–border);
+border-radius: 99px;
+padding: 12px 24px;
+font-size: 14px;
+font-weight: 600;
+z-index: 9999;
+transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+white-space: nowrap;
+display: flex; align-items: center; gap: 8px;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* SECTION BG */
+.section-dark { background: var(–bg2); border-top: 1px solid var(–border); border-bottom: 1px solid var(–border); }
+
+/* MENU PAGE */
+.menu-header {
+padding: 90px 24px 24px;
+border-bottom: 1px solid var(–border);
+}
+.menu-header h1 {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(2rem, 8vw, 3.5rem);
+margin-bottom: 8px;
+}
+.menu-header p { color: var(–muted); font-size: 15px; }
+</style>
+
 </head>
 <body>
-<div>
-    <div class="game-wrapper">
-        <div class="game-panel">
-            <div class="info-bar">
-                <div class="score-box">🍎 النقاط: <span id="scoreValue">0</span></div>
-                <div class="high-box">🏆 أعلى نتيجة: <span id="highScoreValue">0</span></div>
-                <button id="restartButton">🔄 إعادة التشغيل</button>
-                <button id="pauseButton">⏸️ إيقاف</button>
-            </div>
 
-            <canvas id="snakeCanvas" width="500" height="500"></canvas>
+<!-- NAVBAR -->
 
-            <div class="controls">
-                <div class="direction-pad">
-                    <div class="dir-row">
-                        <button class="dir-btn" data-dir="UP">▲ أعلى</button>
-                    </div>
-                    <div class="dir-row">
-                        <button class="dir-btn" data-dir="LEFT">◀ يسار</button>
-                        <button class="dir-btn" data-dir="DOWN">▼ أسفل</button>
-                        <button class="dir-btn" data-dir="RIGHT">يمين ▶</button>
-                    </div>
-                </div>
-            </div>
-            <div class="status" id="gameStatusText">▶ استخدم الأسهم أو الأزرار للعب</div>
-        </div>
-        <footer>🐍 تحكم سلس | تزداد السرعة كل 5 نقاط | تجنب الجدران والذات</footer>
+<nav id="navbar">
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-icon">S</div>
+    <span class="logo-text">ساكورا سوشي</span>
+  </div>
+  <div class="nav-actions">
+    <button class="cart-btn" onclick="showPage('cart')" title="السلة">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="menu-btn" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-btn" onclick="toggleMenu()">✕</button>
+  <a onclick="showPage('home');toggleMenu()">الرئيسية</a>
+  <a onclick="showPage('menu');toggleMenu()">القائمة</a>
+  <a onclick="showPage('cart');toggleMenu()">سلة الطلبات</a>
+</div>
+
+<!-- HOME PAGE -->
+
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-img"></div>
+    <div class="hero-content">
+      <div class="badge"><span class="badge-dot"></span>أوماكاسي بريميوم</div>
+      <h1>فن السوشي<br><em>في كل لقمة.</em></h1>
+      <p>اختبر أرقى تقاليد الأوماكاسي من طوكيو، تُقدَّم إلى بابك. مكونات طازجة، أسلوب محترف، جودة لا تُجارى.</p>
+      <button class="btn-primary" onclick="showPage('menu')">
+        استعرض القائمة
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
     </div>
+  </section>
+
+  <!-- CATEGORIES -->
+
+  <section class="section section-dark">
+    <div class="section-header">
+      <h2 class="section-title">التصنيفات</h2>
+      <a class="section-link" onclick="showPage('menu')">عرض الكل ›</a>
+    </div>
+    <div class="cats-scroll" id="homeCats"></div>
+  </section>
+
+  <!-- FEATURED -->
+
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <p style="font-size:11px;font-weight:700;color:var(--primary);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">اختيار الشيف</p>
+        <h2 class="section-title">الأطباق المميزة</h2>
+      </div>
+      <a class="section-link" onclick="showPage('menu')">الكل ›</a>
+    </div>
+    <div class="products-grid" id="featuredGrid"></div>
+    <div style="text-align:center;margin-top:32px">
+      <button class="btn-outline" onclick="showPage('menu')">عرض القائمة الكاملة</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo" style="justify-content:center;margin-bottom:12px">
+      <div class="logo-icon">S</div>
+      <span class="logo-text">ساكورا سوشي</span>
+    </div>
+    <p>© 2025 ساكورا سوشي — صُنع بإتقان وشغف</p>
+  </footer>
+</div>
+
+<!-- MENU PAGE -->
+
+<div class="page" id="page-menu">
+  <div class="menu-header">
+    <h1>قائمة الطعام</h1>
+    <p>اكتشف مجموعتنا الكاملة من أرقى أطباق السوشي</p>
+  </div>
+  <section class="section section-dark" style="padding:20px 24px">
+    <div class="cats-scroll" id="menuCats"></div>
+  </section>
+  <section class="section" style="padding-top:24px">
+    <div class="products-grid" id="menuGrid"></div>
+  </section>
+  <footer>
+    <div class="logo" style="justify-content:center;margin-bottom:12px">
+      <div class="logo-icon">S</div>
+      <span class="logo-text">ساكورا سوشي</span>
+    </div>
+    <p>© 2025 ساكورا سوشي — صُنع بإتقان وشغف</p>
+  </footer>
+</div>
+
+<!-- PRODUCT DETAIL PAGE -->
+
+<div class="page" id="page-product">
+  <button class="detail-back" onclick="history.back(); showPage(prevPage)">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    العودة للقائمة
+  </button>
+  <div id="productDetail"></div>
+</div>
+
+<!-- CART PAGE -->
+
+<div class="page" id="page-cart">
+  <div class="cart-body">
+    <div class="cart-header-row">
+      <div>
+        <h1 class="cart-title">طلبك</h1>
+        <p class="cart-subtitle" id="cartSubtitle">السلة فارغة</p>
+      </div>
+      <button class="clear-btn" onclick="clearCart()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+        مسح الكل
+      </button>
+    </div>
+    <div id="cartItems"></div>
+    <div id="cartSummary"></div>
+  </div>
+</div>
+
+<!-- SUCCESS PAGE -->
+
+<div class="page" id="page-success">
+  <div class="success-page">
+    <div class="success-icon">✓</div>
+    <h2>تم استلام طلبك!</h2>
+    <p>شكراً لك على طلبك من ساكورا سوشي.<br>سيصلك طلبك خلال 30-45 دقيقة.</p>
+    <button class="btn-primary" onclick="showPage('home')">العودة للرئيسية</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+
+<div class="toast" id="toast">
+  <span>🍣</span>
+  <span id="toastMsg">تمت الإضافة للسلة</span>
 </div>
 
 <script>
-    (function(){
-        // ------------------- إعدادات اللعبة -------------------
-        const canvas = document.getElementById('snakeCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreSpan = document.getElementById('scoreValue');
-        const highScoreSpan = document.getElementById('highScoreValue');
-        const restartBtn = document.getElementById('restartButton');
-        const pauseBtn = document.getElementById('pauseButton');
-        const statusDiv = document.getElementById('gameStatusText');
+// ===== DATA =====
+const categories = [
+  {id:0, name:"الكل"},
+  {id:1, name:"نيغيري"},
+  {id:2, name:"ماكي رولز"},
+  {id:3, name:"ساشيمي"},
+  {id:4, name:"تيماكي"},
+  {id:5, name:"أوراماكي"},
+  {id:6, name:"تخصصات"},
+];
 
-        // أبعاد الشبكة
-        const GRID_SIZE = 20;      // 20x20
-        const CELL_SIZE = canvas.width / GRID_SIZE; // 25px
+const products = [
+  {id:1,name:"نيغيري السلمون",desc:"سلمون أطلسي فاخر محضّر يدوياً فوق أرز السوشي المتبّل. قوام ناعم زبداني بنكهة محيطية نقية.",price:14,catId:1,catName:"نيغيري",img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80",ingredients:["سلمون أطلسي","أرز سوشي","واسابي","نوري"],calories:180,pieces:2,spice:0,veg:false,featured:true,popular:true,isNew:false},
+  {id:2,name:"نيغيري التونا",desc:"تونا زعنفة زرقاء فاخرة فوق أرز سوشي محضّر يدوياً. نكهة غنية ونظيفة بلمسة حريرية.",price:16,catId:1,catName:"نيغيري",img:"https://images.unsplash.com/photo-1553621042-f6e147245754?w=600&q=80",ingredients:["تونا زعنفة زرقاء","أرز سوشي","واسابي","صوص صويا"],calories:160,pieces:2,spice:0,veg:false,featured:true,popular:true,isNew:false},
+  {id:3,name:"نيغيري الإنباشي",desc:"إنباشي زبداني بنكهة خفيفة حلوة. من أكثر الأطباق محبوبة بتدرج الرخامة الرائع.",price:15,catId:1,catName:"نيغيري",img:"https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600&q=80",ingredients:["إنباشي","أرز سوشي","واسابي","بصل أخضر"],calories:170,pieces:2,spice:0,veg:false,featured:false,popular:false,isNew:true},
+  {id:4,name:"رول التنين",desc:"جمبري تمبورا بالداخل، أفوكادو فوق الخارج كقشور التنين. مع صوص الأنقليس.",price:22,origPrice:26,catId:5,catName:"أوراماكي",img:"https://images.unsplash.com/photo-1617196034154-4e8c71e8f1a7?w=600&q=80",ingredients:["جمبري تمبورا","أفوكادو","خيار","صوص أنقليس","سمسم"],calories:420,pieces:8,spice:1,veg:false,featured:true,popular:true,isNew:false},
+  {id:5,name:"رول التونا الحار",desc:"تونا طازجة مع مايونيز حار وخيار. توازن مثالي بين الحرارة والأومامي.",price:18,catId:2,catName:"ماكي رولز",img:"https://images.unsplash.com/photo-1582450871972-ab5ca641643d?w=600&q=80",ingredients:["تونا","مايونيز حار","خيار","نوري","بذور سمسم"],calories:310,pieces:6,spice:2,veg:false,featured:true,popular:true,isNew:false},
+  {id:6,name:"رول كاليفورنيا",desc:"رول كلاسيكي بالسلطعون والأفوكادو والخيار من الداخل للخارج. مفضل الجميع على مر الزمن.",price:14,catId:5,catName:"أوراماكي",img:"https://images.unsplash.com/photo-1617196034232-5b2a5a57e0fb?w=600&q=80",ingredients:["سرطان البحر","أفوكادو","خيار","بذور سمسم","نوري"],calories:280,pieces:8,spice:0,veg:false,featured:false,popular:true,isNew:false},
+  {id:7,name:"رول قوس قزح",desc:"رول كاليفورنيا مُزيّن بمجموعة من الأسماك الطازجة: سلمون، تونا، إنباشي وأفوكادو.",price:24,catId:5,catName:"أوراماكي",img:"https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&q=80",ingredients:["سلمون","تونا","إنباشي","أفوكادو","خيار","سلطعون"],calories:480,pieces:8,spice:0,veg:false,featured:true,popular:true,isNew:false},
+  {id:8,name:"ساشيمي السلمون",desc:"خمس شرائح ناصعة من السلمون الأطلسي الفاخر. نكهة محيطية نقية صافية.",price:20,catId:3,catName:"ساشيمي",img:"https://images.unsplash.com/photo-1534482421-64566f976cfa?w=600&q=80",ingredients:["سلمون أطلسي","زنجبيل","واسابي","دايكون"],calories:200,pieces:5,spice:0,veg:false,featured:false,popular:true,isNew:false},
+  {id:9,name:"ساشيمي التونا",desc:"خمس شرائح من تونا الزعنفة الزرقاء الفاخرة. أحمر عميق، لحمي، غني بشكل رائع.",price:22,catId:3,catName:"ساشيمي",img:"https://images.unsplash.com/photo-1617196034148-8b18a5e7b0a0?w=600&q=80",ingredients:["تونا زعنفة زرقاء","زنجبيل","واسابي","صوص صويا"],calories:180,pieces:5,spice:0,veg:false,featured:false,popular:false,isNew:true},
+  {id:10,name:"رول نباتي",desc:"خيار طازج، أفوكادو، فجل مخلل وجزر ملفوف في نوري. خفيف وملون.",price:12,catId:2,catName:"ماكي رولز",img:"https://images.unsplash.com/photo-1617196034099-e3dc2fb23a80?w=600&q=80",ingredients:["خيار","أفوكادو","فجل مخلل","جزر","نوري","سمسم"],calories:200,pieces:6,spice:0,veg:true,featured:false,popular:false,isNew:false},
+  {id:11,name:"تيماكي السلمون",desc:"مخروط محضّر يدوياً مليء بالسلمون والأفوكادو وأرز السوشي. طازج ولذيذ فوراً.",price:12,catId:4,catName:"تيماكي",img:"https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&q=80",ingredients:["سلمون","أفوكادو","أرز سوشي","نوري","سمسم"],calories:280,pieces:1,spice:0,veg:false,featured:false,popular:false,isNew:true},
+  {id:12,name:"طبق أوماكاسي",desc:"اختيار الشيف من 12 قطعة: نيغيري، ساشيمي ورولات تخصصات. التجربة الكاملة للسوشي.",price:65,origPrice:78,catId:6,catName:"تخصصات",img:"https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600&q=80",ingredients:["اختيار الشيف","أسماك موسمية","مكونات فاخرة"],calories:850,pieces:12,spice:1,veg:false,featured:true,popular:true,isNew:false},
+  {id:13,name:"رول البركان",desc:"تونا حارة بالداخل، إسكالوب مخبوز مع مايونيز حار فوق. مُزيّن بتوبيكو.",price:26,catId:6,catName:"تخصصات",img:"https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80",ingredients:["تونا حارة","إسكالوب","مايونيز حار","توبيكو","خيار"],calories:520,pieces:8,spice:3,veg:false,featured:true,popular:false,isNew:true},
+];
 
-        // متغيرات الثعبان
-        let snake = [];     // مصفوفة من {x, y}
-        let food = { x: 12, y: 12 };
-        let direction = 'RIGHT';    // الاتجاه الحالي
-        let nextDirection = 'RIGHT';
-        let score = 0;
-        let highScore = 0;
-        let gameLoopInterval = null;
-        let isGameRunning = true;    // هل اللعبة نشطة (غير منتهية)
-        let isPaused = false;
-        let baseSpeedMs = 150;       // السرعة الأساسية (مللي ثانية)
-        let currentSpeedMs = baseSpeedMs;
+// ===== STATE =====
+let cart = JSON.parse(localStorage.getItem('sakura-cart')||'[]');
+let currentPage = 'home';
+let prevPage = 'menu';
+let selectedCat = 0;
 
-        // تحميل أفضل نتيجة من التخزين المحلي
-        function loadHighScore() {
-            const saved = localStorage.getItem('snakeHighScore');
-            if(saved && !isNaN(parseInt(saved))) {
-                highScore = parseInt(saved);
-                highScoreSpan.innerText = highScore;
-            } else {
-                highScore = 0;
-                highScoreSpan.innerText = '0';
-            }
-        }
+// ===== CART =====
+function saveCart(){ localStorage.setItem('sakura-cart', JSON.stringify(cart)); updateCartUI(); }
+function addToCart(id, qty=1, notes=''){
+  const p = products.find(x=>x.id===id);
+  const existing = cart.find(x=>x.id===id && x.notes===notes);
+  if(existing) existing.qty += qty;
+  else cart.push({id, qty, notes, name:p.name, price:p.price, img:p.img});
+  saveCart();
+  showToast(`أُضيف "${p.name}" إلى السلة 🍣`);
+}
+function removeFromCart(id){ cart = cart.filter(x=>x.id!==id); saveCart(); renderCart(); }
+function updateQty(id, delta){
+  const item = cart.find(x=>x.id===id);
+  if(!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  saveCart(); renderCart();
+}
+function clearCart(){ cart=[]; saveCart(); renderCart(); }
+function cartTotal(){ return cart.reduce((s,x)=>s+x.price*x.qty,0); }
+function cartCount(){ return cart.reduce((s,x)=>s+x.qty,0); }
+function updateCartUI(){
+  const c = cartCount();
+  const el = document.getElementById('cartCount');
+  el.textContent = c;
+  el.style.display = c>0 ? 'flex' : 'none';
+}
 
-        function saveHighScore() {
-            if(score > highScore) {
-                highScore = score;
-                highScoreSpan.innerText = highScore;
-                localStorage.setItem('snakeHighScore', highScore);
-            }
-        }
+// ===== PAGES =====
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  prevPage = currentPage;
+  currentPage = name;
+  if(name==='home') renderHome();
+  if(name==='menu') renderMenu();
+  if(name==='cart') renderCart();
+}
 
-        // تحديث عرض النتيجة
-        function updateScoreUI() {
-            scoreSpan.innerText = score;
-            if(score > highScore) {
-                highScoreSpan.innerText = score;
-            }
-        }
+function showProduct(id){
+  prevPage = currentPage;
+  showPage('product');
+  renderProduct(id);
+}
 
-        // إنشاء ثعبان جديد في البداية
-        function initSnake() {
-            snake = [
-                { x: 10, y: 10 },
-                { x: 9, y: 10 },
-                { x: 8, y: 10 },
-                { x: 7, y: 10 }
-            ];
-            direction = 'RIGHT';
-            nextDirection = 'RIGHT';
-        }
+function toggleMenu(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
 
-        // توليد طعام جديد في مكان عشوائي غير متداخل مع الثعبان
-        function generateRandomFood() {
-            const totalCells = GRID_SIZE * GRID_SIZE;
-            if(snake.length >= totalCells) {
-                // فوز كامل! إنهاء اللعبة بطريقة خاصة
-                gameOver(true);
-                return false;
-            }
-            // خوارزمية سريعة: تجربة عشوائية حتى نجد مكان فارغ (في الغالب سريع)
-            let freeCells = [];
-            // إذا كان الثعبان كبيراً جداً نستخدم البحث الشامل, لكن نستخدم حلاً عملياً
-            if(snake.length > totalCells * 0.8) {
-                // بحث شامل للفارغات
-                for(let i=0; i<GRID_SIZE; i++) {
-                    for(let j=0; j<GRID_SIZE; j++) {
-                        if(!snake.some(segment => segment.x === i && segment.y === j)) {
-                            freeCells.push({x: i, y: j});
-                        }
-                    }
-                }
-                if(freeCells.length === 0) {
-                    gameOver(true);
-                    return false;
-                }
-                const rand = Math.floor(Math.random() * freeCells.length);
-                food = freeCells[rand];
-                return true;
-            } else {
-                // بحث عشوائي محدود
-                let maxAttempts = 2000;
-                while(maxAttempts-- > 0) {
-                    const randX = Math.floor(Math.random() * GRID_SIZE);
-                    const randY = Math.floor(Math.random() * GRID_SIZE);
-                    if(!snake.some(segment => segment.x === randX && segment.y === randY)) {
-                        food = { x: randX, y: randY };
-                        return true;
-                    }
-                }
-                // لو فشلت المحاولات العشوائية, نستخدم البحث الشامل
-                for(let i=0; i<GRID_SIZE; i++) {
-                    for(let j=0; j<GRID_SIZE; j++) {
-                        if(!snake.some(seg => seg.x === i && seg.y === j)) {
-                            food = { x: i, y: j };
-                            return true;
-                        }
-                    }
-                }
-                gameOver(true);
-                return false;
-            }
-        }
+// ===== RENDER =====
+function productCardHTML(p, i=0){
+  let badge = '';
+  if(p.popular && !p.isNew) badge = `<div class="product-badge">شائع</div>`;
+  if(p.isNew) badge = `<div class="product-badge new">جديد</div>`;
+  if(p.veg) badge += `<div class="product-badge veg">نباتي</div>`;
+  return `
+  <div class="product-card" style="animation-delay:${i*0.07}s" onclick="showProduct(${p.id})">
+    <div class="product-img-wrap">
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      ${badge}
+      <button class="product-add" onclick="event.stopPropagation();addToCart(${p.id})">+</button>
+    </div>
+    <div class="product-info">
+      <div class="product-cat">${p.catName}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-desc">${p.desc}</div>
+      <div class="product-footer">
+        <span class="product-price">$${p.price.toFixed(2)}</span>
+        <span class="product-meta">${p.pieces} قطع · ${p.calories} سعرة</span>
+      </div>
+    </div>
+  </div>`;
+}
 
-        // ضبط سرعة اللعبة بناءً على النقاط (كل 5 نقاط تزيد السرعة بنسبة)
-        function updateSpeedBasedOnScore() {
-            let newSpeed = baseSpeedMs - Math.floor(score / 5) * 6;
-            if(newSpeed < 70) newSpeed = 70;
-            if(newSpeed !== currentSpeedMs) {
-                currentSpeedMs = newSpeed;
-                // إعادة تعيين المؤقت بالسرعة الجديدة إذا كانت اللعبة نشطة وغير متوقفة
-                if(gameLoopInterval && isGameRunning && !isPaused) {
-                    clearInterval(gameLoopInterval);
-                    gameLoopInterval = setInterval(gameTick, currentSpeedMs);
-                }
-            }
-        }
+function renderHome(){
+  // cats
+  const catsEl = document.getElementById('homeCats');
+  catsEl.innerHTML = categories.slice(1).map(c=>`<div class="cat-chip" onclick="showPage('menu')">${c.name}</div>`).join('');
+  // featured
+  const featured = products.filter(p=>p.featured);
+  document.getElementById('featuredGrid').innerHTML = featured.map((p,i)=>productCardHTML(p,i)).join('');
+}
 
-        // حركة الثعبان (تحديث حالة اللعبة)
-        function moveSnake() {
-            // تطبيق الاتجاه الجديد
-            direction = nextDirection;
+function renderMenu(){
+  const menuCats = document.getElementById('menuCats');
+  menuCats.innerHTML = categories.map(c=>`
+    <div class="cat-chip ${selectedCat===c.id?'active':''}" onclick="filterCat(${c.id})">${c.name}</div>
+  `).join('');
+  const filtered = selectedCat===0 ? products : products.filter(p=>p.catId===selectedCat);
+  document.getElementById('menuGrid').innerHTML = filtered.map((p,i)=>productCardHTML(p,i)).join('');
+}
 
-            // حساب الرأس الجديد
-            let newHead = { ...snake[0] };
-            switch(direction) {
-                case 'RIGHT': newHead.x += 1; break;
-                case 'LEFT':  newHead.x -= 1; break;
-                case 'UP':    newHead.y -= 1; break;
-                case 'DOWN':  newHead.y += 1; break;
-                default: break;
-            }
+function filterCat(id){
+  selectedCat = id;
+  renderMenu();
+}
 
-            // التحقق من أكل الطعام
-            const willEat = (newHead.x === food.x && newHead.y === food.y);
+function renderProduct(id){
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  let badge = '';
+  if(p.popular) badge += `<div class="product-badge">شائع</div>`;
+  if(p.isNew) badge += `<div class="product-badge new">جديد</div>`;
+  const spiceIcons = p.spice>0 ? '🌶'.repeat(p.spice) : '';
+  document.getElementById('productDetail').innerHTML = `
+    <div class="detail-img-wrap">
+      <img class="detail-img" src="${p.img}" alt="${p.name}">
+      <div class="detail-badges">${badge}</div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-cat">
+        <span>${p.catName}</span>
+        ${p.veg?'<span style="color:var(--green)">🌿 نباتي</span>':''}
+        ${spiceIcons?`<span>${spiceIcons}</span>`:''}
+      </div>
+      <h1 class="detail-name">${p.name}</h1>
+      <div class="detail-price-row">
+        <span class="detail-price">$${p.price.toFixed(2)}</span>
+        ${p.origPrice?`<span class="detail-old-price">$${p.origPrice.toFixed(2)}</span>`:''}
+      </div>
+      <p class="detail-desc">${p.desc}</p>
+      <div class="detail-specs">
+        <div>
+          <div class="spec-label">حجم الحصة</div>
+          <div class="spec-value">${p.pieces} قطع</div>
+        </div>
+        <div>
+          <div class="spec-label">السعرات الحرارية</div>
+          <div class="spec-value">${p.calories} سعرة</div>
+        </div>
+        <div class="ingredients-wrap">
+          <div class="spec-label">المكونات الرئيسية</div>
+          <div class="ingredients">${p.ingredients.map(i=>`<span class="ing-tag">${i}</span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="detail-notes">
+        <label>تعليمات خاصة</label>
+        <textarea id="pNotes" rows="3" placeholder="أي تفضيلات غذائية أو حساسيات؟"></textarea>
 
-            // إضافة الرأس الجديد
-            snake.unshift(newHead);
-            if(!willEat) {
-                snake.pop();
-            } else {
-                // زيادة النقاط
-                score++;
-                updateScoreUI();
-                saveHighScore();
-                updateSpeedBasedOnScore();
-                // توليد طعام جديد
-                const success = generateRandomFood();
-                if(!success) return; // game over handled inside
-            }
+```
+  </div>
+  <div class="qty-row">
+    <div class="qty-ctrl">
+      <button class="qty-btn" onclick="changeQty(-1)">−</button>
+      <span class="qty-num" id="pQty">1</span>
+      <button class="qty-btn" onclick="changeQty(1)">+</button>
+    </div>
+    <button class="add-btn" id="addBtn" onclick="addFromDetail(${p.id})">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      أضف للطلب — $${p.price.toFixed(2)}
+    </button>
+  </div>
+</div>
+```
 
-            // التحقق من التصادم (الجدران أو الذات)
-            // الحدود
-            if(newHead.x < 0 || newHead.x >= GRID_SIZE || newHead.y < 0 || newHead.y >= GRID_SIZE) {
-                gameOver(false);
-                return;
-            }
-            // التصادم مع الذات: نتحقق إذا كان الرأس موجود في باقي الجسم (باستثناء أول عنصر بعد الإضافة)
-            for(let i = 1; i < snake.length; i++) {
-                if(snake[i].x === newHead.x && snake[i].y === newHead.y) {
-                    gameOver(false);
-                    return;
-                }
-            }
-        }
+`;
+window._detailQty = 1;
+window._detailProduct = p;
+}
 
-        // إنهاء اللعبة (مع عرض رسالة)
-        function gameOver(fullWin = false) {
-            if(!isGameRunning) return;
-            isGameRunning = false;
-            if(gameLoopInterval) {
-                clearInterval(gameLoopInterval);
-                gameLoopInterval = null;
-            }
-            if(fullWin && snake.length === GRID_SIZE * GRID_SIZE) {
-                statusDiv.innerHTML = "🏆 إنجاز أسطوري! ملأت اللوحة بالكامل! اضغط إعادة التشغيل 🏆";
-            } else {
-                statusDiv.innerHTML = "💀 انتهت اللعبة! اضغط 'إعادة التشغيل' لبداية جديدة 💀";
-            }
-            draw(); // رسم نهائي مع رسالة
-        }
+function changeQty(d){
+window._detailQty = Math.max(1, (window._detailQty||1)+d);
+document.getElementById(‘pQty’).textContent = window._detailQty;
+const p = window._detailProduct;
+if(p) document.getElementById(‘addBtn’).innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> أضف للطلب — $${(p.price*window._detailQty).toFixed(2)}`;
+}
 
-        // إعادة ضبط كامل اللعبة
-        function restartGame() {
-            // إيقاف أي مؤقت قديم
-            if(gameLoopInterval) {
-                clearInterval(gameLoopInterval);
-                gameLoopInterval = null;
-            }
-            // إعادة تعيين المتغيرات
-            initSnake();
-            score = 0;
-            isGameRunning = true;
-            isPaused = false;
-            pauseBtn.innerText = "⏸️ إيقاف";
-            currentSpeedMs = baseSpeedMs;
-            updateScoreUI();
-            saveHighScore();   // يحافظ على أعلى نتيجة سابقة ولا يخسرها
-            // توليد طعام آمن
-            // إزالة أي طعام متداخل
-            food = { x: 5, y: 5 };
-            // نتأكد أن الطعام ليس في الثعبان
-            while(snake.some(seg => seg.x === food.x && seg.y === food.y)) {
-                food = { x: Math.floor(Math.random() * GRID_SIZE), y: Math.floor(Math.random() * GRID_SIZE) };
-            }
-            // تأكيد صحة الطعام
-            if(!snake.some(seg => seg.x === food.x && seg.y === food.y)) {
-                // جيد
-            } else {
-                generateRandomFood();
-            }
-            direction = 'RIGHT';
-            nextDirection = 'RIGHT';
-            statusDiv.innerHTML = "▶ اللعبة مستمرة | استخدم الأسهم أو الأزرار";
-            // بدء المؤقت
-            gameLoopInterval = setInterval(gameTick, currentSpeedMs);
-            draw();
-        }
+function addFromDetail(id){
+const qty = window._detailQty||1;
+const notes = document.getElementById(‘pNotes’)?.value||’’;
+addToCart(id,qty,notes);
+const btn = document.getElementById(‘addBtn’);
+btn.classList.add(‘added’);
+btn.textContent = ‘تمت الإضافة! ✓’;
+setTimeout(()=>{ btn.classList.remove(‘added’); changeQty(0); },2000);
+}
 
-        // دورة اللعبة (تحديث المنطق وإعادة الرسم)
-        function gameTick() {
-            if(!isGameRunning || isPaused) return;
-            moveSnake();      // تحتوي داخلياً على gameOver إذا حصل تصادم
-            draw();           // إعادة رسم اللوحة بعد الحركة
-            if(!isGameRunning) {
-                // إذا انتهت اللعبة نوقف التحديثات
-                if(gameLoopInterval) clearInterval(gameLoopInterval);
-                gameLoopInterval = null;
-            }
-        }
+function renderCart(){
+const sub = document.getElementById(‘cartSubtitle’);
+const itemsEl = document.getElementById(‘cartItems’);
+const summaryEl = document.getElementById(‘cartSummary’);
+if(cart.length===0){
+sub.textContent = ‘السلة فارغة’;
+itemsEl.innerHTML = ` <div class="cart-empty"> <svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> <p>لم تضف أي شيء بعد</p> <button class="btn-primary" onclick="showPage('menu')">استعرض القائمة</button> </div>`;
+summaryEl.innerHTML = ‘’;
+return;
+}
+sub.textContent = `${cartCount()} عناصر في سلتك`;
+itemsEl.innerHTML = cart.map(item=>`<div class="cart-item"> <img src="${item.img}" alt="${item.name}"> <div> <div class="cart-item-name">${item.name}</div> <div class="cart-item-price">$${(item.price*item.qty).toFixed(2)}</div> <div class="cart-item-each">$${item.price.toFixed(2)} للوحدة</div> </div> <div class="cart-item-controls"> <div class="cart-qty-row"> <button class="cqb" onclick="updateQty(${item.id},-1)">−</button> <span class="cqn">${item.qty}</span> <button class="cqb" onclick="updateQty(${item.id},1)">+</button> </div> <button class="del-btn" onclick="removeFromCart(${item.id})">🗑</button> </div> </div>`).join(’’);
+const delivery = 3.99;
+const sub2 = cartTotal();
+summaryEl.innerHTML = `<div class="order-summary"> <h3>ملخص الطلب</h3> <div class="summary-row"><span>المجموع الجزئي (${cartCount()} عناصر)</span><span>$${sub2.toFixed(2)}</span></div> <div class="summary-row"><span>رسوم التوصيل</span><span>$${delivery.toFixed(2)}</span></div> <div class="summary-total"><span>الإجمالي</span><span style="color:var(--primary)">$${(sub2+delivery).toFixed(2)}</span></div> <button class="checkout-btn" onclick="checkout()">إتمام الطلب ←</button> </div>`;
+}
 
-        // ------------------- رسم اللوحة (سلس وحديث) -------------------
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم شبكة خفيفة
-            ctx.strokeStyle = '#2e6b5c';
-            ctx.lineWidth = 0.8;
-            for(let i = 0; i <= GRID_SIZE; i++) {
-                ctx.beginPath();
-                ctx.moveTo(i * CELL_SIZE, 0);
-                ctx.lineTo(i * CELL_SIZE, canvas.height);
-                ctx.stroke();
-                ctx.moveTo(0, i * CELL_SIZE);
-                ctx.lineTo(canvas.width, i * CELL_SIZE);
-                ctx.stroke();
-            }
+function checkout(){
+cart = []; saveCart();
+showPage(‘success’);
+}
 
-            // رسم الطعام (تأثير متوهج)
-            ctx.shadowBlur = 0;
-            ctx.shadowColor = "transparent";
-            const grad = ctx.createRadialGradient(food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, 5, food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, 15);
-            grad.addColorStop(0, '#ff5e3a');
-            grad.addColorStop(1, '#d93c1a');
-            ctx.fillStyle = grad;
-            ctx.beginPath();
-            ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2, food.y * CELL_SIZE + CELL_SIZE/2, CELL_SIZE/2 - 2, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = '#fff3b0';
-            ctx.beginPath();
-            ctx.arc(food.x * CELL_SIZE + CELL_SIZE/2 - 2, food.y * CELL_SIZE + CELL_SIZE/2 - 2, 3, 0, Math.PI*2);
-            ctx.fill();
+// ===== TOAST =====
+function showToast(msg){
+const t = document.getElementById(‘toast’);
+document.getElementById(‘toastMsg’).textContent = msg;
+t.classList.add(‘show’);
+setTimeout(()=>t.classList.remove(‘show’),2500);
+}
 
-            // رسم الثعبان (جسم انسيابي)
-            for(let i = 0; i < snake.length; i++) {
-                const seg = snake[i];
-                const x = seg.x * CELL_SIZE;
-                const y = seg.y * CELL_SIZE;
-                const isHead = (i === 0);
-                const radius = CELL_SIZE * 0.35;
-                // تدرج حسب الجزء
-                let fillColor;
-                if(isHead) {
-                    fillColor = '#f7c56e';
-                } else {
-                    const intensity = 0.4 + (i / snake.length) * 0.4;
-                    fillColor = `rgb(70, 180, 120)`;
-                }
-                ctx.shadowBlur = 4;
-                ctx.shadowColor = "rgba(0,0,0,0.3)";
-                ctx.fillStyle = isHead ? '#ffcf70' : '#46b47a';
-                ctx.beginPath();
-                ctx.roundRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4, 8);
-                ctx.fill();
-                // عيون الثعبان للرأس
-                if(isHead) {
-                    ctx.fillStyle = "#ffffff";
-                    ctx.beginPath();
-                    ctx.arc(x + CELL_SIZE - 8, y + 8, 3, 0, Math.PI*2);
-                    ctx.arc(x + 8, y + 8, 3, 0, Math.PI*2);
-                    ctx.fill();
-                    ctx.fillStyle = "#0a2b22";
-                    ctx.beginPath();
-                    ctx.arc(x + CELL_SIZE - 7, y + 7, 1.5, 0, Math.PI*2);
-                    ctx.arc(x + 9, y + 7, 1.5, 0, Math.PI*2);
-                    ctx.fill();
-                }
-            }
-            ctx.shadowBlur = 0;
+// ===== NAVBAR SCROLL =====
+window.addEventListener(‘scroll’,()=>{
+document.getElementById(‘navbar’).classList.toggle(‘scrolled’, window.scrollY>30);
+});
 
-            // إذا كانت اللعبة متوقفة (paused) نضيف طبقة
-            if(isPaused && isGameRunning) {
-                ctx.globalAlpha = 0.7;
-                ctx.fillStyle = '#0a1f1a';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.globalAlpha = 1;
-                ctx.font = "bold 24px 'Segoe UI'";
-                ctx.fillStyle = "#f7e05e";
-                ctx.shadowBlur = 0;
-                ctx.fillText("⏸ متوقف", canvas.width/2-70, canvas.height/2);
-            } else if(!isGameRunning) {
-                ctx.globalAlpha = 0.75;
-                ctx.fillStyle = '#000000aa';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.globalAlpha = 1;
-                ctx.font = "bold 22px 'Segoe UI'";
-                ctx.fillStyle = "#ffbe76";
-                ctx.fillText("GAME OVER", canvas.width/2-70, canvas.height/2);
-                ctx.font = "14px monospace";
-                ctx.fillStyle = "#aaddcc";
-                ctx.fillText("اضغط إعادة التشغيل", canvas.width/2-85, canvas.height/2+40);
-            }
-        }
-
-        // مساعد لرسم مستدير الزوايا
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-                if (w < 2 * r) r = w / 2;
-                if (h < 2 * r) r = h / 2;
-                this.moveTo(x+r, y);
-                this.lineTo(x+w-r, y);
-                this.quadraticCurveTo(x+w, y, x+w, y+r);
-                this.lineTo(x+w, y+h-r);
-                this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-                this.lineTo(x+r, y+h);
-                this.quadraticCurveTo(x, y+h, x, y+h-r);
-                this.lineTo(x, y+r);
-                this.quadraticCurveTo(x, y, x+r, y);
-                return this;
-            };
-        }
-
-        // تغيير الاتجاه مع منع الانعكاس المباشر
-        function changeDirection(newDir) {
-            if(!isGameRunning || isPaused) return;
-            const opposite = {
-                'UP': 'DOWN',
-                'DOWN': 'UP',
-                'LEFT': 'RIGHT',
-                'RIGHT': 'LEFT'
-            };
-            if(opposite[newDir] !== direction) {
-                nextDirection = newDir;
-            }
-        }
-
-        // أحداث لوحة المفاتيح
-        function handleKeydown(e) {
-            const key = e.key;
-            e.preventDefault();
-            if(key === 'ArrowUp') changeDirection('UP');
-            else if(key === 'ArrowDown') changeDirection('DOWN');
-            else if(key === 'ArrowLeft') changeDirection('LEFT');
-            else if(key === 'ArrowRight') changeDirection('RIGHT');
-            else if(key === ' ' || key === 'Space') {
-                e.preventDefault();
-                togglePause();
-            }
-        }
-
-        // تبديل الإيقاف المؤقت
-        function togglePause() {
-            if(!isGameRunning) return;
-            isPaused = !isPaused;
-            if(isPaused) {
-                if(gameLoopInterval) clearInterval(gameLoopInterval);
-                gameLoopInterval = null;
-                pauseBtn.innerText = "▶ استئناف";
-                statusDiv.innerHTML = "⏸ اللعبة متوقفة مؤقتاً | اضغط استئناف";
-            } else {
-                if(gameLoopInterval) clearInterval(gameLoopInterval);
-                gameLoopInterval = setInterval(gameTick, currentSpeedMs);
-                pauseBtn.innerText = "⏸️ إيقاف";
-                statusDiv.innerHTML = "▶ اللعبة مستمرة | استخدم الأسهم";
-                draw();
-                // نرسم فوراً لإزالة طبقة التوقف
-            }
-            draw();
-        }
-
-        // إعداد الأزرار الاتجاهية
-        function setupDirectionButtons() {
-            const dirBtns = document.querySelectorAll('.dir-btn');
-            dirBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const dir = btn.getAttribute('data-dir');
-                    if(dir === 'UP') changeDirection('UP');
-                    else if(dir === 'DOWN') changeDirection('DOWN');
-                    else if(dir === 'LEFT') changeDirection('LEFT');
-                    else if(dir === 'RIGHT') changeDirection('RIGHT');
-                });
-            });
-        }
-
-        // منع التمرير بالأسهم على الصفحة
-        window.addEventListener('keydown', function(e) {
-            if(e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space') {
-                e.preventDefault();
-            }
-        });
-
-        // تهيئة اللعبة وتشغيلها
-        function initGame() {
-            loadHighScore();
-            initSnake();
-            score = 0;
-            updateScoreUI();
-            isGameRunning = true;
-            isPaused = false;
-            currentSpeedMs = baseSpeedMs;
-            // توليد طعام مناسب
-            generateRandomFood();
-            direction = 'RIGHT';
-            nextDirection = 'RIGHT';
-            if(gameLoopInterval) clearInterval(gameLoopInterval);
-            gameLoopInterval = setInterval(gameTick, currentSpeedMs);
-            draw();
-            // ربط الأحداث
-            document.addEventListener('keydown', handleKeydown);
-            restartBtn.addEventListener('click', () => { restartGame(); });
-            pauseBtn.addEventListener('click', togglePause);
-            setupDirectionButtons();
-        }
-
-        initGame();
-    })();
+// ===== INIT =====
+updateCartUI();
+renderHome();
 </script>
+
 </body>
 </html>
